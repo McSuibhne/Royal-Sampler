@@ -1,5 +1,6 @@
 package poker;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -7,14 +8,14 @@ import java.util.Scanner;
  * Created by Orla on 17/03/2017.
  */
 public class HumanPlayer extends PokerPlayer {
+
     public HumanPlayer(DeckOfCards deck){
         super(deck);
 
+
     }
 
-
-
-    public int discard(){
+        public int discard(){
 
         Scanner scanner=new Scanner(System.in);
 
@@ -47,8 +48,15 @@ public class HumanPlayer extends PokerPlayer {
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         HumanPlayer player = new HumanPlayer(deck);
-
-        System.out.println("Before discard: " + player.hand.toString());
+        TwitterBot twit = null;
+        try {
+            twit = new TwitterBot();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+  String s =player.hand.toString();
+          System.out.println("Before discard: " + player.hand.toString());
+       // twit.postaStatus(player.hand.toString());
         int discards = player.discard();
         System.out.println("Discards: " + discards);
         System.out.println("After discard: " + player.hand.toString());

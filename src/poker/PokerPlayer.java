@@ -3,15 +3,11 @@ package poker;
 import java.util.Random;
 
 public class PokerPlayer {
-    protected HandOfCards hand;
-    
-    //deafault contructor
+    public HandOfCards hand;
 
-    DeckOfCards deckofcards;
     //Hand is initialized.
     public PokerPlayer(DeckOfCards deck) {
-       deckofcards=deck;
-        hand = new HandOfCards(deckofcards);
+        hand = new HandOfCards(deck);
 
     }
 
