@@ -3,10 +3,10 @@ package poker;
 
 //
 public class PlayingCard {
-    static public final char HEARTS = 'H';
-    static public final char DIAMONDS = 'D';
-    static public final char CLUBS = 'C';
-    static public final char SPADES = 'S';
+    static public final char HEARTS = (char)'\u2665';
+    static public final char DIAMONDS = (char)'\u2666';
+    static public final char CLUBS = (char)'\u2663';
+    static public final char SPADES = (char)'\u2660';
 
     private String card_name;
     private char card_suit;
