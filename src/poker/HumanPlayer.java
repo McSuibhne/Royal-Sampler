@@ -56,7 +56,8 @@ public class HumanPlayer extends PokerPlayer {
         }
   String s =player.hand.toString();
           System.out.println("Before discard: " + player.hand.toString());
-       // twit.postaStatus(player.hand.toString());
+         // twit.getUserTweet();
+       twit.postaStatus(player.hand.toString());
         int discards = player.discard();
         System.out.println("Discards: " + discards);
         System.out.println("After discard: " + player.hand.toString());
