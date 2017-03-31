@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 /**
  * Created by Orla on 17/03/2017.
- */
+*/
 public class HumanPlayer extends PokerPlayer {
 
     public HumanPlayer(DeckOfCards deck){
@@ -64,3 +64,4 @@ public class HumanPlayer extends PokerPlayer {
 
     }
 }
+
