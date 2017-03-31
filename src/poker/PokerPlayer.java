@@ -21,7 +21,7 @@ public class PokerPlayer {
     // constantly changing hand.
     // The number of discards that occur is recorded and returned.
     // All print statements are for testing and can be later removed.
-    public int discard(){
+    public boolean[] discard(){
         Random random = new Random();
         int discard_minimum = random.nextInt(100);
         int discards = 0;
@@ -35,16 +35,22 @@ public class PokerPlayer {
                 discard_cards[i] = true;
             }
         }
+
+        return discard_cards;
+    }
+    public void discardCards(boolean[] discard_cards){
+        int discards = 0;
         for(int i=0; i<HandOfCards.CARDS_IN_HAND; i++){
             if(discard_cards[i] && discards < 3) {
                 hand.discardCard(i);
                 discards++;
             }
         }
+        System.out.println("Number of cards discarded: "+discards );
 
         hand.sort();
-        return discards;
     }
+
 
     //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before
     // and after calling discard() to show the effects, as well as the number of discards that occur.
@@ -53,8 +59,9 @@ public class PokerPlayer {
         PokerPlayer player = new PokerPlayer(deck);
 
         System.out.println("Before discard: " + player.hand.toString());
-        int discards = player.discard();
-        System.out.println("Discards: " + discards);
+        boolean[] discards = player.discard();
+        player.discardCards(discards);
+
         System.out.println("After discard: " + player.hand.toString());
 
     }
