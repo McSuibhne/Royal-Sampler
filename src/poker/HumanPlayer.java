@@ -36,9 +36,9 @@ public class HumanPlayer extends PokerPlayer {
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         HumanPlayer player = new HumanPlayer(deck);
-       /* TwitterBot twit = null;
+       /* TwitterInterface twit = null;
         try {
-            twit = new TwitterBot();
+            twit = new TwitterInterface();
         } catch (IOException e) {
             e.printStackTrace();
         }*/
