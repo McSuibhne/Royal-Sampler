@@ -15,6 +15,10 @@ public class RoundOfPoker {
 	public RoundOfPoker(){
 		
 	}
+	
+	public int getPot(){
+		return pot;
+	}
 
 	// Main function simulates a round of poker
 	public static void main(String[] args) {
