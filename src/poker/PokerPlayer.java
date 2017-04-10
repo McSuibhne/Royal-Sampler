@@ -2,53 +2,22 @@ package poker;
 
 import java.util.Random;
 
-public class PokerPlayer {
+public abstract class PokerPlayer {
+    public static final int STARTING_CHIPS = 10;
+    private DeckOfCards deck;
     public HandOfCards hand;
-    private String player_name;
-    static public final int NO_OF_PLAYERS = 5;
+    public String name;
+    public int chips;
 
     //Hand is initialized.
-    public PokerPlayer(DeckOfCards deck, String name) {
+    public PokerPlayer(String player_name, DeckOfCards card_deck) {
+        name = player_name;
+        deck = card_deck;
+        chips = STARTING_CHIPS;
+    }
+
+    public void deal(){
         hand = new HandOfCards(deck);
-        player_name = name;
-
-    }
-
-    public String getPlayer_name() {
-        return player_name;
-    }
-
-    public void setPlayer_name(String player_name) {
-        this.player_name = player_name;
-    }
-
-
-    //When discard is called, the method generates a new random integer between 0 and 100, not including 100.
-    // It then calls getDiscardProbability on each card index in the hand and compares the returned values to the
-    // random required minimum.
-    // As this minimum is always <100 and cannot go below 0, a card with a discard probability of 100 will always be
-    // traded while a card with a discard probability of 0 can never be traded.
-    // The index of each card that should be traded is recorded in a boolean array. This is so all discards occur only
-    // after the discard probabilities of all cards have been determined, as errors could occur otherwise from testing a
-    // constantly changing hand.
-    // The number of discards that occur is recorded and returned.
-    // All print statements are for testing and can be later removed.
-    public boolean[] discard() {
-        Random random = new Random();
-        int discard_minimum = random.nextInt(100);
-        int discards = 0;
-        boolean[] discard_cards = {false, false, false, false, false};
-        System.out.println("Discard probability minimum: " + discard_minimum);
-        for (int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
-            int discard_probability = hand.getDiscardProbability(i);
-            System.out.println("Card " + i + " discard probability: " + discard_probability);
-
-            if (discard_probability > discard_minimum) {
-                discard_cards[i] = true;
-            }
-        }
-
-        return discard_cards;
     }
 
     public void discard_cards(boolean[] discard_cards) {
@@ -64,18 +33,21 @@ public class PokerPlayer {
         hand.sort();
     }
 
-    public boolean canOpen() {
-        if (hand.isOnePair()) {
-            return true;
-        } else
 
-            return false;
-    }
+    //TODO: Implement getBet in both AIPlayer (with AI) and HumanPlayer (ask Twitter). getBet should return -1 to indicate a fold but
+    //TODO:  should not otherwise be allowed to return an integer less than the given current bet. Note: This >=current_bet check
+    //TODO:   would possibly be better placed in RoundOfCards (more coherent) but currently I think it needs to be in getBet.
+    //TODO:    In summary, only return options are (a) [-1]...fold   (b) [current_bet]...call/see    (c) [>current_bet]...raise
+    public abstract int getBet(int current_bet, int chips_to_call);
 
 
     //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before
     // and after calling discard() to show the effects, as well as the number of discards that occur.
+    // 10-04-17 Note: Tests disabled while old code is moved into AIPlayer
     public static void main(String[] args) {
+        /*
+        DeckOfCards deck = new DeckOfCards();
+        PokerPlayer player = new PokerPlayer("test_player", deck);
        /* DeckOfCards deck = new DeckOfCards();
         ArrayList<PokerPlayer> player = new ArrayList<>();
 
@@ -88,6 +60,8 @@ public class PokerPlayer {
             AIPlayer players = new AIPlayer(deck);
                 player.add(players);
            }
+
+        System.out.println("After discard: " + player.hand.toString());
 
         }
 //        for(int j= 0 ;j<DeckOfCards.CARDS_IN_DECK; j++){

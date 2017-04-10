@@ -12,8 +12,7 @@ public class HumanPlayer extends PokerPlayer {
 TwitterInterface twitter;
     public HumanPlayer(DeckOfCards deck, String name,TwitterInterface twitterInterface) {
         super(deck, name);
-        twitter=twitterInterface;
-
+        twitter = twitterInterface;
     }
 
     public boolean getRaise() {
@@ -30,7 +29,7 @@ TwitterInterface twitter;
         System.out.println("Please enter your name");
         Scanner input = new Scanner(System.in);
         String name = input.nextLine();
-        setPlayer_name(name);
+        //setPlayer_name(name);
     }
 
     public boolean getFold() {
@@ -97,6 +96,12 @@ TwitterInterface twitter;
         }
         return discard_cards;
     }
+
+    public void outputHand(){
+        //TODO: Small amount of twitter code to tell the player what their hand is. Called after each deal/trade in  RoundOfPoker.
+        System.out.println(hand.toString()); //TEMPORARY!
+    }
+
 
     public static void main(String[] args) {
       /*  DeckOfCards deck = new DeckOfCards();

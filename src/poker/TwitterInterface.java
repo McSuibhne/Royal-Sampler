@@ -1,4 +1,4 @@
-/*package poker;
+package poker;
 
 import twitter4j.*;
 import twitter4j.api.*;
@@ -15,13 +15,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;*/
+import java.util.Map;
 
 /**
  * Created by Orla on 20/03/2017.
  */
 public class TwitterInterface {
-/*
+
     TwitterFactory tf;
     ConfigurationBuilder cb = new ConfigurationBuilder();
     Twitter twitter;
@@ -57,8 +57,12 @@ public class TwitterInterface {
 
     }
 
-
-    public void getUserTweet(String user) {
+/*10-04-17:
+ *  Changed return type to "String" from "void" and added "return null" at end just to remove error
+ *  in HumanPlayer line 65 and allow project to run. Just placeholder code, remove or replace it whenever.
+ *  -Jonathan
+ */
+    public String getUserTweet(String user) {
 
         try {
             List<Status> statuses;
@@ -78,6 +82,7 @@ public class TwitterInterface {
             System.out.println("Failed to get timeline: " + te.getMessage());
 
         }
+        return null;
     }
 
 
@@ -167,7 +172,7 @@ public class TwitterInterface {
 //twit.postreply();
     }
 
-*/
+
 
 
 }

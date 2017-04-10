@@ -21,6 +21,7 @@ public class HandOfCards {
     public static final int WEIGHTING_VALUE = 14; //Weighting value set at 14 as this is the highest possible card value
     private PlayingCard[] card_hand = new PlayingCard[CARDS_IN_HAND];
     public DeckOfCards deck;
+
     //Deck is initialized and 5 cards are dealt.
     public HandOfCards(DeckOfCards card_deck) {
         deck = card_deck;
@@ -243,7 +244,8 @@ public class HandOfCards {
                     + card_hand[2].getGameValue();
         }
         else{
-            two_pair_score += WEIGHTING_VALUE*WEIGHTING_VALUE*card_hand[3].getGameValue() + WEIGHTING_VALUE*card_hand[1].getGameValue() + card_hand[0].getGameValue();
+            two_pair_score += WEIGHTING_VALUE*WEIGHTING_VALUE*card_hand[3].getGameValue()
+                    + WEIGHTING_VALUE*card_hand[1].getGameValue() + card_hand[0].getGameValue();
         }
 
         return two_pair_score;
@@ -289,9 +291,9 @@ public class HandOfCards {
         // he hand if the returned cards do not match any others and are both lower in value than the discarded card.
         // However, this should usually return a high discard probability.
         if(isThreeOfAKind()){
-            if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()){  //The card in the middle position will always be part of the triple
+            if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()){ //The card in the middle position will always be part of the triple
                 if(cardPosition == CARDS_IN_HAND - 1){
-                    probability += (int) ((1 - ((card_hand[cardPosition].getGameValue() - 1) / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
+                    probability += (int)((1 - ((card_hand[cardPosition].getGameValue() - 1)/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
                 }
                 else{
                     probability += 100;     //Should definitely trade at least one card
@@ -304,7 +306,6 @@ public class HandOfCards {
             int potential_flushes = isBustedFlush(cardPosition);
             if(potential_flushes > 0){
                 probability += (int)(((potential_flushes)/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))*100);
-
             }
         }
 

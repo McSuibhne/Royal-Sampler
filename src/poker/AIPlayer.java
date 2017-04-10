@@ -1,55 +1,42 @@
 package poker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 /**
- * AI  Poker Player Class
+ * Created by Jonathan on 10/04/2017.
  */
 public class AIPlayer extends PokerPlayer {
+    int discard_minimum;
 
-    List<String> strings = Arrays.asList("Fred, Bruce,Hermione, Dumbledor, Annabelle ,Bart,Raven,Phoenix ,Mystique, Wolverine, Katniss, Thor, Maximus, Zena, Storm".split(","));
-    ArrayList<String> used = new ArrayList<String>();
-
-    public AIPlayer(DeckOfCards deck, String name) {
-        super(deck, name);
+    public AIPlayer(String player_name, int discard_min, DeckOfCards deck){
+        super(player_name, deck);
+        discard_minimum = discard_min;
     }
 
-    public void setPlayer_name() {
-        String name;
+    public int getBet(int current_bet, int chips_to_call){
+        int bet = -1;
 
-        Random random = new Random();
-        int namePostion = random.nextInt(strings.size());
-        name = strings.get(namePostion);
-        boolean flag = isNameUsedAlready(name);
-        while (flag) {
-            namePostion = random.nextInt(strings.size());
-            name = strings.get(namePostion);
-            flag = isNameUsedAlready(name);
-        }
-        setPlayer_name(name);
 
+        return bet;
     }
 
-    boolean isNameUsedAlready(String name) {
-        boolean flag = false;
-        for (int j = 0; j < used.size(); j++) {
-            if (used.get(j).equals(name)) {
-                flag = true;
-            } else {
-                flag = false;
+
+    // Method calls getDiscardProbability on each card index in the hand and compares the returned values to the
+    // given discard minimum.
+    // As this minimum is always <100 and cannot go below 0, a card with a discard probability of 100 will always be
+    // traded while a card with a discard probability of 0 can never be traded.
+    // The index of each card that should be traded is recorded in a boolean array and returned.
+    // All print statements are for testing and can be later removed.
+    public boolean[] discard(){
+        int discards = 0;
+        boolean[] discard_cards = {false, false, false, false, false};
+        System.out.println("Discard probability minimum: " + discard_minimum); //Testing
+        for(int i=0; i<HandOfCards.CARDS_IN_HAND; i++){
+            int discard_probability = hand.getDiscardProbability(i);
+            System.out.println("Card " + i + " discard probability: " + discard_probability); //Testing
+
+            if(discard_probability > discard_minimum){
+                discard_cards[i] = true;
             }
         }
-        used.add(name);
-        return flag;
+        return discard_cards;
     }
 }
-
-
-
-
-
-
-
