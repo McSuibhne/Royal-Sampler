@@ -2,6 +2,7 @@ package poker;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -15,12 +16,14 @@ public class GameOfPoker {
     public static final int NUMBER_OF_BOTS = 3;
     public static final int DISCARD_MINIMUM_RANGE = 20;
     public static final int HUMAN_INDEX = 0;
+    TwitterInterface twitter;
 
-    public GameOfPoker(){
+    public GameOfPoker(TwitterInterface twitterInterface){
+        twitter = twitterInterface;
         Random rand = new Random();
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
         DeckOfCards deck = new DeckOfCards();
-        player_list.add(new HumanPlayer(deck));
+        player_list.add(new HumanPlayer(deck, "human_player", twitter));
         for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(getAiName(i), discard_minimum, deck));
@@ -97,8 +100,23 @@ public class GameOfPoker {
     }
 
 
+
     // main method initialising twitter listener and waiting for game start request
     public static void main(String[] args) {
-        GameOfPoker game = new GameOfPoker();
+        TwitterInterface twitterInterface = null;
+        try {
+            twitterInterface = new TwitterInterface();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        GameOfPoker gameOfPoker = new GameOfPoker(twitterInterface);
+       /* gameOfPoker.start();
+        boolean flag;
+        do {
+            flag = gameOfPoker.checkwanttoplay();
+            gameOfPoker.runRounds(flag);
+        }
+        while (flag != true);
+        gameOfPoker.exit();*/
     }
 }

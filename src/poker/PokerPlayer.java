@@ -20,6 +20,7 @@ public abstract class PokerPlayer {
         hand = new HandOfCards(deck);
     }
 
+
     public void discard_cards(boolean[] discard_cards) {
         int discards = 0;
         for (int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {

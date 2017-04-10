@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class HumanPlayer extends PokerPlayer {
 TwitterInterface twitter;
     public HumanPlayer(DeckOfCards deck, String name,TwitterInterface twitterInterface) {
-        super(deck, name);
+        super(name, deck);
         twitter = twitterInterface;
     }
 
@@ -49,17 +49,23 @@ TwitterInterface twitter;
 
         boolean[] discard_cards = {false, false, false, false, false};
         System.out.println("Enter 1 to discard and 0 to keep");
-        for (int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
+        for(int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
             int j = scanner.nextInt();
-            if (j == 1) {
+            if(j == 1) {
                 discard_cards[i] = true;
-            } else
+            }
+            else
                 discard_cards[i] = false;
 
         }
 
 
         return discard_cards;
+    }
+
+
+    public int getBet(int current_bet, int chips_to_call) { //TODO: merge with twitter code. See PokerPlayer for description
+        return 0;
     }
 
     public boolean[] discardTList() {

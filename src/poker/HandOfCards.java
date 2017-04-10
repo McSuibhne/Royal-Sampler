@@ -622,6 +622,7 @@ public class HandOfCards {
                 System.out.println("isTwoPair: " + hand.isTwoPair());
                 System.out.println("isOnePair: " + hand.isOnePair());
                 System.out.println("isHighHand: " + hand.isHighHand());
+
                 for(int j=0; j<CARDS_IN_HAND; j++){
                     System.out.println("Card " + j + ": " + hand.getDiscardProbability(j));
                 }
