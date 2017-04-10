@@ -1,15 +1,19 @@
 package poker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * AI  Poker Player Class
  */
-public class AIPlayer extends  PokerPlayer {
+public class AIPlayer extends PokerPlayer {
 
-   List<String> strings = Arrays.asList("Fred, Bruce,Hermione, Dumbledor, Annabelle ,Bart,Raven,Phoenix ,Mystique, Wolverine, Katniss, Thor, Maximus, Zena, Storm".split(","));
+    List<String> strings = Arrays.asList("Fred, Bruce,Hermione, Dumbledor, Annabelle ,Bart,Raven,Phoenix ,Mystique, Wolverine, Katniss, Thor, Maximus, Zena, Storm".split(","));
     ArrayList<String> used = new ArrayList<String>();
-    public AIPlayer(DeckOfCards deck,String name) {
+
+    public AIPlayer(DeckOfCards deck, String name) {
         super(deck, name);
     }
 
@@ -25,22 +29,23 @@ public class AIPlayer extends  PokerPlayer {
             name = strings.get(namePostion);
             flag = isNameUsedAlready(name);
         }
-            setPlayer_name(name);
+        setPlayer_name(name);
 
     }
 
-        boolean  isNameUsedAlready(String name){
-        boolean flag=false;
-        for(int j=0;j<used.size();j++){
-           if (used.get(j).equals(name)){
-           flag= true;}
-            else{
-               flag=false;
+    boolean isNameUsedAlready(String name) {
+        boolean flag = false;
+        for (int j = 0; j < used.size(); j++) {
+            if (used.get(j).equals(name)) {
+                flag = true;
+            } else {
+                flag = false;
             }
         }
-            used.add(name);
-       return flag; }
+        used.add(name);
+        return flag;
     }
+}
 
 
 
