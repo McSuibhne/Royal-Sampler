@@ -4,19 +4,21 @@ import java.util.Random;
 
 public abstract class PokerPlayer {
     public static final int STARTING_CHIPS = 10;
-    private DeckOfCards deck;
+    //private DeckOfCards deck;
     public HandOfCards hand;
     public String name;
     public int chips;
+    public int current_bet;
 
     //Hand is initialized.
     public PokerPlayer(String player_name, DeckOfCards card_deck) {
         name = player_name;
-        deck = card_deck;
+        //deck = card_deck;
         chips = STARTING_CHIPS;
+        current_bet = 0;
     }
 
-    public void deal(){
+    public synchronized void deal(DeckOfCards deck){
         hand = new HandOfCards(deck);
     }
 
@@ -35,11 +37,10 @@ public abstract class PokerPlayer {
     }
 
 
-    //TODO: Implement getBet in both AIPlayer (with AI) and HumanPlayer (ask Twitter). getBet should return -1 to indicate a fold but
-    //TODO:  should not otherwise be allowed to return an integer less than the given current bet. Note: This >=current_bet check
-    //TODO:   would possibly be better placed in RoundOfCards (more coherent) but currently I think it needs to be in getBet.
-    //TODO:    In summary, only return options are (a) [-1]...fold   (b) [current_bet]...call/see    (c) [>current_bet]...raise
-    public abstract int getBet(int current_bet, int chips_to_call);
+    //TODO: Implement getBet in both AIPlayer (with AI) and HumanPlayer (ask Twitter). getBet should change current_bet
+    //TODO:  -1 to indicate a fold and otherwise place their bet amount (call or raise).
+    //TODO:    In summary, only current_bet options are (a)[-1]...fold  (b)[highest_bet]...call/see  (c)[>highest_bet]...raise
+    public abstract void getBet(int current_bet);
 
 
     //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before

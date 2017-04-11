@@ -13,6 +13,7 @@ TwitterInterface twitter;
     public HumanPlayer(DeckOfCards deck, String name,TwitterInterface twitterInterface) {
         super(name, deck);
         twitter = twitterInterface;
+        chips=11;       //testing
     }
 
     public boolean getRaise() {
@@ -64,8 +65,8 @@ TwitterInterface twitter;
     }
 
 
-    public int getBet(int current_bet, int chips_to_call) { //TODO: merge with twitter code. See PokerPlayer for description
-        return 0;
+    public void getBet(int highest_bet) { //TODO: merge with twitter code. See PokerPlayer for description
+        current_bet = -1;
     }
 
     public boolean[] discardTList() {
@@ -104,8 +105,8 @@ TwitterInterface twitter;
     }
 
     public void outputHand(){
-        //TODO: Small amount of twitter code to tell the player what their hand is. Called after each deal/trade in  RoundOfPoker.
-        System.out.println(hand.toString()); //TEMPORARY!
+        //TODO: Small amount of twitter code to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
+        System.out.println("Your hand is:"+ hand.toString()); //TEMPORARY!
     }
 
 

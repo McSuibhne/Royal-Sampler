@@ -60,6 +60,7 @@ Undertaker
 Warlord
 Fred
 Bruce
+Harry
 Hermione
 Dumbledore
 Annabelle
@@ -67,6 +68,10 @@ Bart
 Raven
 Phoenix
 Mystique
+Nightcrawler
+Cyclops
+Colossus
+Deadpool
 Wolverine
 Katniss
 Thor
