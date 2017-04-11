@@ -10,7 +10,10 @@ import java.util.*;
 public class RoundOfPoker {
     public static final int ANTE = 1;
     private int pot;
-
+    public static final int NUMBER_OF_BOTS = 4;
+    public static final int DISCARD_MINIMUM_RANGE = 20;
+    public static final int HUMAN_INDEX = 0;
+    
     public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck) {
         pot = 0;
         ArrayList<PokerPlayer> live_players = new ArrayList<>();
@@ -221,6 +224,14 @@ public class RoundOfPoker {
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
+        Random rand = new Random();
+        TwitterInterface twitter = null;
+        player_list.add(new HumanPlayer(deck, "human_player", twitter));
+        for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
+            int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
+            player_list.add(new AIPlayer(i, discard_minimum, deck));
+            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
+        }
         RoundOfPoker round = new RoundOfPoker(player_list, deck);
     }
 
