@@ -39,8 +39,8 @@ public class RoundOfPoker {
             }
         }
         if(!player_busted && live_players.size() > 1) {
-            discard(live_players,deck);
-            bet(opener_index, live_players);
+        	bet(opener_index, live_players);
+        	//discard(live_players,deck);
             checkforWinner(live_players,deck);
         }
 
@@ -204,7 +204,6 @@ public class RoundOfPoker {
             }
         }
     }
-
 
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
