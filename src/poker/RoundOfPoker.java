@@ -157,19 +157,19 @@ public class RoundOfPoker {
             }
             else if(current_player.current_bet == highest_bet) {
                 if(highest_bet == 0) {
-                    System.out.println(current_player.name + " checks");
+                    System.out.println(current_player.getName() + " checks");
                 }
                 else{
-                    System.out.println(current_player.name +" calls" );
+                    System.out.println(current_player.getName() +" calls" );
                 }
                 calls_since_raise++;
             }
             else {
                 if(highest_bet==0) {
-                    System.out.println(current_player.name +" raises by "+ current_player.current_bet);
+                    System.out.println(current_player.getName() +" raises by "+ current_player.current_bet);
                 }
                 else {
-                    System.out.println(current_player.name +" sees "+ highest_bet +" and raises by "+ (current_player.current_bet-highest_bet) +" to "+ current_player.current_bet);
+                    System.out.println(current_player.getName() +" sees "+ highest_bet +" and raises by "+ (current_player.current_bet-highest_bet) +" to "+ current_player.current_bet);
                 }
                 highest_bet = current_player.current_bet;
                 calls_since_raise = 0;
@@ -186,7 +186,7 @@ public class RoundOfPoker {
         for(int i = 0; i < live_players.size(); i++) {
             live_players.get(i).discards();
             //  live_players.get(i).discard_cards(array);
-            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+            System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
 
     }
@@ -194,7 +194,7 @@ public class RoundOfPoker {
     public void checkForWinner(ArrayList<PokerPlayer> live_players) {
         //test code will be removed
         for (int i = 0; i < live_players.size(); i++) {
-            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+            System.out.println(live_players.get(i).getName() + " has a hand value of " + live_players.get(i).hand.getGameValue());
 
         }
     }
@@ -214,7 +214,7 @@ public class RoundOfPoker {
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
         Random rand = new Random();
         TwitterInterface twitter = null;
-        player_list.add(new HumanPlayer(deck, "human_player", twitter));
+        player_list.add(new HumanPlayer(deck, twitter));
         for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum, deck));

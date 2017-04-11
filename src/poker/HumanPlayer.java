@@ -115,7 +115,7 @@ TwitterInterface twitter;
 
     public void outputHand(){
         //TODO: Small amount of twitter code to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
-        System.out.println("Your hand is:"+ hand.toString()); //TEMPORARY!
+        System.out.println(getName()+" your hand :"+ hand.toString()); //TEMPORARY!
     }
 
 
