@@ -10,16 +10,13 @@ import java.util.*;
 public class RoundOfPoker {
     public static final int ANTE = 1;
     private int pot;
-    public static final int NUMBER_OF_BOTS = 4;
-    public static final int DISCARD_MINIMUM_RANGE = 20;
-    public static final int HUMAN_INDEX = 0;
-    
+
     public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck) {
         pot = 0;
         ArrayList<PokerPlayer> live_players = new ArrayList<>();
         live_players = (ArrayList<PokerPlayer>) player_list.clone();
-        playRound(live_players, deck);   //As in GameOfPoker, it's probably better to call playRound from within the higher
-        // higher class (game) instead of in the constructor.
+        playRound(live_players, deck);   //It's probably better to call playRound from within the higher
+                                         // higher class (game) instead of in the constructor.
     }
 
     public void playRound(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
@@ -38,11 +35,16 @@ public class RoundOfPoker {
                 deck.reset();
             }
         }
-        if(!player_busted && live_players.size() > 1) {
-        	bet(opener_index, live_players);
-        	//discard(live_players,deck);
-            checkforWinner(live_players,deck);
+        int winner_index = 0;
+        if(live_players.size() > 1) {
+            bet(opener_index, live_players);    // first betting round
+            discard(live_players);        //Temporarily removed to test findWinner function
+            //bet(opener_index, live_players);  //second betting round
+            checkForWinner(live_players);
+            winner_index = findWinner(live_players);
         }
+        System.out.println(live_players.get(winner_index).name +" has won the round");
+        live_players.get(winner_index).chips += pot;
 
     }
 
@@ -203,6 +205,38 @@ public class RoundOfPoker {
                 calls_since_raise = 0;
             }
         }
+        for(int i=0; i<live_players.size(); i++){
+            live_players.get(i).chips -= live_players.get(i).current_bet;           //TODO; IMPROVE THIS! TEMPORARY CODE, SHOULD BE DONE INSIDE MAIN LOOP
+            pot += live_players.get(i).current_bet;
+        }
+    }
+
+    public void discard(ArrayList<PokerPlayer> live_players) {
+        boolean[] array;
+        for(int i = 0; i < live_players.size(); i++) {
+            live_players.get(i).discards();
+            //  live_players.get(i).discard_cards(array);
+            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+        }
+
+    }
+
+    public void checkForWinner(ArrayList<PokerPlayer> live_players) {
+        //test code will be removed
+        for (int i = 0; i < live_players.size(); i++) {
+            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+
+        }
+    }
+
+    public int findWinner(ArrayList<PokerPlayer> live_players) {
+        int best_hand_index = 0;
+        for(int i=1; i<live_players.size(); i++){
+            if(live_players.get(i).hand.getGameValue() > live_players.get(best_hand_index).hand.getGameValue()) {
+                best_hand_index = i;
+            }
+        }
+        return best_hand_index;
     }
 
     public static void main(String[] args) {
@@ -211,8 +245,8 @@ public class RoundOfPoker {
         Random rand = new Random();
         TwitterInterface twitter = null;
         player_list.add(new HumanPlayer(deck, "human_player", twitter));
-        for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
-            int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
+        for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
+            int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum, deck));
             System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
         }
