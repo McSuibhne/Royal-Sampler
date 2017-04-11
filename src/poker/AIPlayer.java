@@ -48,7 +48,7 @@ public class AIPlayer extends PokerPlayer {
     // traded while a card with a discard probability of 0 can never be traded.
     // The index of each card that should be traded is recorded in a boolean array and returned.
     // All print statements are for testing and can be later removed.
-    public boolean[] discard(){
+    public void discards(){
         int discards = 0;
         boolean[] discard_cards = {false, false, false, false, false};
         System.out.println("Discard probability minimum: " + discard_minimum); //Testing
@@ -60,6 +60,7 @@ public class AIPlayer extends PokerPlayer {
                 discard_cards[i] = true;
             }
         }
-        return discard_cards;
+        discard_cards(discard_cards);
+
     }
 }

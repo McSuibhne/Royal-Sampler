@@ -11,9 +11,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.util.function.Consumer;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -21,28 +19,47 @@ import java.util.Map;
  * Created by Orla on 20/03/2017.
  */
 public class TwitterInterface {
-
+    public static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
+    public static final int NAMES_FILE_LENGTH = 4;
     TwitterFactory tf;
-    ConfigurationBuilder cb = new ConfigurationBuilder();
+
     Twitter twitter;
     List<Status> tweets;
-    TwitterFactory config;
+    Configuration config= setConfiguration();
 
     public TwitterInterface() throws IOException {
-
-        Twitter config = getConfiguration();
-    }
-
-    public Twitter getConfiguration() {
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey("se1REJHrrSYeVoW676cQRXojJ")
-                .setOAuthConsumerSecret("xDucls8Mxtleyk8eKBLsBt3JDl9RtFrzuhMNSUIBAOKt1iX2NU")
-                .setOAuthAccessToken("843979502158004225-9FjLlo7kDHhWeNUVFfQC0t3Rgic3FUR")
-                .setOAuthAccessTokenSecret("kp2EXtlo10RXtUCLgxg8dPfvozNalzpsyCVUm5UDR2Nf4");
-        tf = new TwitterFactory(cb.build());
+        tf = new TwitterFactory(config);
         twitter = tf.getInstance();
-        return twitter;
     }
+
+
+    public Configuration setConfiguration() {
+        ConfigurationBuilder configurationBuilder= new ConfigurationBuilder();
+        String ai_name = null;
+        try{
+
+            BufferedReader reader = new BufferedReader(new FileReader(NAMES_FILE));
+            String[] line = new String[NAMES_FILE_LENGTH];
+            for(int i=0; i<NAMES_FILE_LENGTH; i++){
+                line[i] = reader.readLine();
+
+            }
+            configurationBuilder.setDebugEnabled(true)
+                    .setOAuthConsumerKey(line[0])
+                    .setOAuthConsumerSecret(line[1])
+                    .setOAuthAccessToken(line[2])
+                    .setOAuthAccessTokenSecret(line[3]);
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        config=configurationBuilder.build();
+
+        return config; }
+
 
     public void postaStatus(String s) {
         String testStatus = s;

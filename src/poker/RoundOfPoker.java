@@ -36,10 +36,13 @@ public class RoundOfPoker {
             }
         }
         if(!player_busted && live_players.size() > 1) {
+            discard(live_players,deck);
             bet(opener_index, live_players);
+            checkforWinner(live_players,deck);
         }
 
     }
+
 
     public void countChips(ArrayList<PokerPlayer> live_players) {
         for(int i = 0; i < live_players.size(); i++) {
@@ -70,6 +73,37 @@ public class RoundOfPoker {
             }
         }
         return isHumanBusted;
+    }
+    public void discard(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+        boolean[] array;
+        for(int i = 0; i < live_players.size(); i++) {
+           live_players.get(i).discards();
+         //  live_players.get(i).discard_cards(array);
+            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+        }
+
+    }
+    public void checkforWinner(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+
+        for (int i = 0; i < live_players.size(); i++) {
+            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+
+        }
+        compare(live_players,deck);
+    }
+    public void compare(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+        if ((live_players.get(0).hand.getGameValue() >= live_players.get(1).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(2).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(3).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(4).hand.getGameValue())) { // a >= b,c,d,e
+            //  winner= players.get(0).;
+            System.out.println(live_players.get(0).name + " is the Winner of this Round: " + live_players.get(0).hand.getGameValue());
+        } else if ((live_players.get(1).hand.getGameValue() >= (live_players.get(2).hand.getGameValue())) && (live_players.get(1).hand.getGameValue() >= (live_players.get(3).hand.getGameValue())) && ((live_players.get(1).hand.getGameValue() >= (live_players.get(4).hand.getGameValue())))) {      // b >= c,d,e
+            System.out.println(live_players.get(1).name + " is the Winner of this Round: " + live_players.get(1).hand.getGameValue());
+        } else if ((live_players.get(2).hand.getGameValue() >= live_players.get(3).hand.getGameValue()) && (live_players.get(2).hand.getGameValue() >= live_players.get(4).hand.getGameValue())) {                  // c >= d,e
+            System.out.println(live_players.get(2).name + " is the Winner of this Round: " + (live_players.get(2).hand.getGameValue()));
+        } else if (live_players.get(3).hand.getGameValue() >= live_players.get(3).hand.getGameValue()) {                                // d >= e
+            System.out.println(live_players.get(3).name + " is the Winner of this Round: " + (live_players.get(3).hand.getGameValue()));
+        } else {                                            // e > d
+            System.out.println(live_players.get(4).name + " is the Winner of this Round: " + (live_players.get(4).hand.getGameValue()));
+        }
     }
 
     public void dealCards(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {

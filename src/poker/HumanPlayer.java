@@ -43,7 +43,7 @@ TwitterInterface twitter;
         }
     }
 
-    public boolean[] discard() {
+    public void discards() {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -59,9 +59,9 @@ TwitterInterface twitter;
                 discard_cards[i] = false;
 
         }
+        discard_cards(discard_cards);
 
-
-        return discard_cards;
+       // return discard_cards;
     }
 
 
