@@ -50,7 +50,7 @@ public class HumanPlayer extends PokerPlayer {
 
         return discard_cards;
     }
-
+/*
     public boolean[] discardTList(){
 
         boolean[] discard_cards = {false, false, false, false, false};
@@ -62,9 +62,10 @@ public class HumanPlayer extends PokerPlayer {
         }
 
 
-        String  status =twit.getUserTweet("OrlaCullen15");
+        String status = twit.getUserTweet("OrlaCullen15");
 
-            //Process char String str = "true false true false false";
+
+        //Process char String str = "true false true false false";
 
             String[] parts = status.split(" ");
 
@@ -86,6 +87,7 @@ public class HumanPlayer extends PokerPlayer {
         }
         return discard_cards;
     }
+    */
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         HumanPlayer player = new HumanPlayer(deck);
@@ -106,5 +108,6 @@ public class HumanPlayer extends PokerPlayer {
         twit.postreply("Hand after discard" +player.hand.toString());
         System.out.println("After discard: " + player.hand.toString());
     }
+
 }
 

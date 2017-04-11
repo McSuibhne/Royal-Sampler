@@ -1,4 +1,4 @@
-/*package poker;
+package poker;
 
 import twitter4j.*;
 import twitter4j.api.*;
@@ -15,13 +15,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;*/
+import java.util.Map;
 
-/**
+/*
  * Created by Orla on 20/03/2017.
  */
 public class TwitterInterface {
-/*
+
     TwitterFactory tf;
     ConfigurationBuilder cb = new ConfigurationBuilder();
     Twitter twitter;
@@ -166,8 +166,6 @@ public class TwitterInterface {
 
 //twit.postreply();
     }
-
-*/
 
 
 }
