@@ -16,10 +16,8 @@ TwitterInterface twitter;
         chips=11;       //testing
     }
 
-    public boolean getRaise() {
-        Scanner scanner = new Scanner(System.in);
-        String raise = scanner.nextLine();
-        if (raise.equalsIgnoreCase("Raise")) {
+    public boolean getRaise(String word) {
+        if (word.equalsIgnoreCase("Raise")) {
             return true;
         } else {
             return false;
@@ -33,10 +31,9 @@ TwitterInterface twitter;
         //setPlayer_name(name);
     }
 
-    public boolean getFold() {
-        Scanner scanner = new Scanner(System.in);
-        String fold = scanner.nextLine();
-        if (fold.equalsIgnoreCase("Fold")) {
+    public boolean getFold(String word) {
+
+        if (word.equalsIgnoreCase("Fold")) {
             return true;
         } else {
             return false;
@@ -61,14 +58,23 @@ TwitterInterface twitter;
         }
         discard_cards(discard_cards);
 
-       // return discard_cards;
+        // return discard_cards;
     }
 
 
     public void getBet(int highest_bet) { //TODO: merge with twitter code. See PokerPlayer for description
-        current_bet = -1;
-    }
+        System.out.print("Please enter raise or fold or call ");
+        Scanner scanner = new Scanner(System.in);
+        String word = scanner.nextLine();
+        if (getFold(word)){
+            current_bet = -1;
+        }else if (getRaise(word)){
+            current_bet= highest_bet+1;
 
+        }
+        else
+            current_bet=highest_bet;
+    }
     public boolean[] discardTList() {
 
         boolean[] discard_cards = {false, false, false, false, false};
