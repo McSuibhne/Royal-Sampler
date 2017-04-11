@@ -39,10 +39,13 @@ public class RoundOfPoker {
             }
         }
         if(!player_busted && live_players.size() > 1) {
+            discard(live_players,deck);
             bet(opener_index, live_players);
+            checkforWinner(live_players,deck);
         }
 
     }
+
 
     public void countChips(ArrayList<PokerPlayer> live_players) {
         for(int i = 0; i < live_players.size(); i++) {
@@ -73,6 +76,36 @@ public class RoundOfPoker {
             }
         }
         return isHumanBusted;
+    }
+    public void discard(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+        boolean[] array;
+        for(int i = 0; i < live_players.size(); i++) {
+           live_players.get(i).discards();
+         //  live_players.get(i).discard_cards(array);
+            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+        }
+
+    }
+    public void checkforWinner(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+        //test code will be removed
+        for (int i = 0; i < live_players.size(); i++) {
+            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+
+        }
+        compare(live_players,deck);
+    }
+    public void compare(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+        if ((live_players.get(0).hand.getGameValue() >= live_players.get(1).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(2).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(3).hand.getGameValue())){ // a >= b,c,d,e
+
+            System.out.println(live_players.get(0).name + " is the Winner of this Round: " + live_players.get(0).hand.getGameValue());
+        } else if (((live_players.get(1).hand.getGameValue() >= (live_players.get(2).hand.getGameValue())) && (live_players.get(1).hand.getGameValue() >= (live_players.get(3).hand.getGameValue())) )) {      // b >= c,d,e
+            System.out.println(live_players.get(1).name + " is the Winner of this Round: " + live_players.get(1).hand.getGameValue());
+        } else if ((live_players.get(2).hand.getGameValue() >= live_players.get(3).hand.getGameValue()) ) {                  // c >= d,e
+            System.out.println(live_players.get(2).name + " is the Winner of this Round: " + (live_players.get(2).hand.getGameValue()));
+
+        } else {
+            System.out.println(live_players.get(3).name + " is the Winner of this Round: " + (live_players.get(3).hand.getGameValue()));
+        }
     }
 
     public void dealCards(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
@@ -172,55 +205,7 @@ public class RoundOfPoker {
         }
     }
 
-    /*public void checkforWinner() {
 
-        for (int i = 0; i < players.size(); i++) {
-            System.out.println(players.get(i).getPlayer_name() + " has a hand value of " + players.get(i).hand.getGameValue());
-
-        }
-        compare();
-    }
-
-    public void checkforDiscard() {
-        for (int j = 0; j < players.size(); j++) {
-            // System.out.println("Player"+j+"can Open :" + players.get(j).canOpen());
-            if (j == 0) {
-                System.out.println("Please enter 1 to discard 0 to keep for each postion ");
-                boolean[] array = players.get(j).discard();
-                players.get(j).discard_cards(array);
-                System.out.println(players.get(j).getPlayer_name() + "hand is " + players.get(j).hand.toString() + "After discarding");
-            } else {
-                boolean[] array = players.get(j).discard();
-                players.get(j).discard_cards(array);
-                System.out.println(players.get(j).getPlayer_name() + "hand is " + players.get(j).hand.toString() + "After discarding");
-            }
-
-        }
-
-    }
-
-    public void compare() {
-        if ((players.get(0).hand.getGameValue() >= players.get(1).hand.getGameValue())
-                && (players.get(0).hand.getGameValue() >= players.get(2).hand.getGameValue())
-                && (players.get(0).hand.getGameValue() >= players.get(3).hand.getGameValue())
-                && (players.get(0).hand.getGameValue() >= players.get(4).hand.getGameValue())) { // a >= b,c,d,e
-            System.out.println(players.get(0).getPlayer_name() + " is the Winner of this Round: " + players.get(0).hand.getGameValue());
-        } else if ((players.get(1).hand.getGameValue() >= (players.get(2).hand.getGameValue()))
-                && (players.get(1).hand.getGameValue() >= (players.get(3).hand.getGameValue()))
-                && ((players.get(1).hand.getGameValue() >= (players.get(4).hand.getGameValue())))) {      // b >= c,d,e
-            System.out.println(players.get(1).getPlayer_name() + " is the Winner of this Round: " + players.get(1).hand.getGameValue());
-        } else if ((players.get(2).hand.getGameValue() >= players.get(3).hand.getGameValue())
-                && (players.get(2).hand.getGameValue() >= players.get(4).hand.getGameValue())) {                  // c >= d,e
-            System.out.println(players.get(2).getPlayer_name() + " is the Winner of this Round: " + (players.get(2).hand.getGameValue()));
-        } else if (players.get(3).hand.getGameValue() >= players.get(3).hand.getGameValue()) {                                // d >= e
-            System.out.println(players.get(3).getPlayer_name() + " is the Winner of this Round: " + (players.get(3).hand.getGameValue()));
-        } else {                                            // e > d
-            System.out.println(players.get(4).getPlayer_name() + " is the Winner of this Round: " + (players.get(4).hand.getGameValue()));
-        }
-    }*/
-
-
-    // Main function simulates a round of poker
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         ArrayList<PokerPlayer> player_list = new ArrayList<>();

@@ -1,7 +1,5 @@
 package poker;
 
-import java.util.Random;
-
 public abstract class PokerPlayer {
     public static final int STARTING_CHIPS = 10;
     //private DeckOfCards deck;
@@ -95,4 +93,6 @@ public abstract class PokerPlayer {
 
     }*/
     }
+
+    public abstract void discards();
 }
