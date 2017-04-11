@@ -43,7 +43,7 @@ public class RoundOfPoker {
             checkForWinner(live_players);
             winner_index = findWinner(live_players);
         }
-        System.out.println(live_players.get(winner_index).name +" has won the round");
+        System.out.println(live_players.get(winner_index).getName() +" has won the round");
         live_players.get(winner_index).chips += pot;
 
     }
@@ -58,7 +58,7 @@ public class RoundOfPoker {
             else {
                 chip_string = " chips";
             }
-            System.out.println(live_players.get(i).name + " has " + live_players.get(i).chips + chip_string);
+            System.out.println(live_players.get(i).getName() + " has " + live_players.get(i).chips + chip_string);
         }
     }
 
@@ -70,7 +70,7 @@ public class RoundOfPoker {
                 pot += ANTE;
             }
             else {
-                System.out.println(live_players.get(i).name + "Has run out of chips and is eliminated from the round");
+                System.out.println(live_players.get(i).getName() + "Has run out of chips and is eliminated from the round");
                 if(i == GameOfPoker.HUMAN_INDEX) {
                     isHumanBusted = true;
                 }
@@ -84,14 +84,14 @@ public class RoundOfPoker {
         for(int i = 0; i < live_players.size(); i++) {
            live_players.get(i).discards();
          //  live_players.get(i).discard_cards(array);
-            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+            System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
 
     }
     public void checkforWinner(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
         //test code will be removed
         for (int i = 0; i < live_players.size(); i++) {
-            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+            System.out.println(live_players.get(i).getName() + " has a hand value of " + live_players.get(i).hand.getGameValue());
 
         }
         compare(live_players,deck);
@@ -99,21 +99,21 @@ public class RoundOfPoker {
     public void compare(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
         if ((live_players.get(0).hand.getGameValue() >= live_players.get(1).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(2).hand.getGameValue()) && (live_players.get(0).hand.getGameValue() >= live_players.get(3).hand.getGameValue())){ // a >= b,c,d,e
 
-            System.out.println(live_players.get(0).name + " is the Winner of this Round: " + live_players.get(0).hand.getGameValue());
+            System.out.println(live_players.get(0).getName() + " is the Winner of this Round: " + live_players.get(0).hand.getGameValue());
         } else if (((live_players.get(1).hand.getGameValue() >= (live_players.get(2).hand.getGameValue())) && (live_players.get(1).hand.getGameValue() >= (live_players.get(3).hand.getGameValue())) )) {      // b >= c,d,e
-            System.out.println(live_players.get(1).name + " is the Winner of this Round: " + live_players.get(1).hand.getGameValue());
+            System.out.println(live_players.get(1).getName() + " is the Winner of this Round: " + live_players.get(1).hand.getGameValue());
         } else if ((live_players.get(2).hand.getGameValue() >= live_players.get(3).hand.getGameValue()) ) {                  // c >= d,e
-            System.out.println(live_players.get(2).name + " is the Winner of this Round: " + (live_players.get(2).hand.getGameValue()));
+            System.out.println(live_players.get(2).getName() + " is the Winner of this Round: " + (live_players.get(2).hand.getGameValue()));
 
         } else {
-            System.out.println(live_players.get(3).name + " is the Winner of this Round: " + (live_players.get(3).hand.getGameValue()));
+            System.out.println(live_players.get(3).getName()+ " is the Winner of this Round: " + (live_players.get(3).hand.getGameValue()));
         }
     }
 
     public void dealCards(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
         for(int i = 0; i < live_players.size(); i++) {
             live_players.get(i).deal(deck);
-            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+            System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
         try {
             HumanPlayer temp_human = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
@@ -144,7 +144,7 @@ public class RoundOfPoker {
                 if(opener_indexes.size() > 1 && i == opener_indexes.size() - 1) {
                     System.out.print("and ");
                 }
-                System.out.print(live_players.get(opener_indexes.get(i)).name);
+                System.out.print(live_players.get(opener_indexes.get(i)).getName());
             }
             if(opener_indexes.size() > 0) {
                 Random rand = new Random();
@@ -163,7 +163,7 @@ public class RoundOfPoker {
         int calls_since_raise = 0;
         boolean betting_finished = false;
 
-        System.out.println(live_players.get(opener_index).name + " will open");
+        System.out.println(live_players.get(opener_index).getName() + " will open");
 
         for(int i=opener_index; !betting_finished; i++){
             PokerPlayer current_player = live_players.get(i % live_players.size());
@@ -175,7 +175,7 @@ public class RoundOfPoker {
 
             current_player.getBet(highest_bet);
             if(current_player.current_bet == -1) {
-                System.out.println(current_player.name +" folds");
+                System.out.println(current_player.getName() +" folds");
                 live_players.remove(i % live_players.size());
                 i+=2;
                 if(live_players.size() <= 1){
@@ -187,19 +187,19 @@ public class RoundOfPoker {
             }
             else if(current_player.current_bet == highest_bet) {
                 if(highest_bet == 0) {
-                    System.out.println(current_player.name + " checks");
+                    System.out.println(current_player.getName()+ " checks");
                 }
                 else{
-                    System.out.println(current_player.name +" calls with ");
+                    System.out.println(current_player.getName() +" calls with ");
                 }
                 calls_since_raise++;
             }
             else {
                 if(highest_bet==0) {
-                    System.out.println(current_player.name +" raises by "+ current_player.current_bet);
+                    System.out.println(current_player.getName()+" raises by "+ current_player.current_bet);
                 }
                 else {
-                    System.out.println(current_player.name +" sees "+ highest_bet +" and raises by "+ (current_player.current_bet-highest_bet) +" to "+ current_player.current_bet);
+                    System.out.println(current_player.getName()+" sees "+ highest_bet +" and raises by "+ (current_player.current_bet-highest_bet) +" to "+ current_player.current_bet);
                 }
                 highest_bet = current_player.current_bet;
                 calls_since_raise = 0;
@@ -216,7 +216,7 @@ public class RoundOfPoker {
         for(int i = 0; i < live_players.size(); i++) {
             live_players.get(i).discards();
             //  live_players.get(i).discard_cards(array);
-            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+            System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
 
     }
@@ -224,7 +224,7 @@ public class RoundOfPoker {
     public void checkForWinner(ArrayList<PokerPlayer> live_players) {
         //test code will be removed
         for (int i = 0; i < live_players.size(); i++) {
-            System.out.println(live_players.get(i).name + " has a hand value of " + live_players.get(i).hand.getGameValue());
+            System.out.println(live_players.get(i).getName() + " has a hand value of " + live_players.get(i).hand.getGameValue());
 
         }
     }
@@ -244,11 +244,11 @@ public class RoundOfPoker {
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
         Random rand = new Random();
         TwitterInterface twitter = null;
-        player_list.add(new HumanPlayer(deck, "human_player", twitter));
+        player_list.add(new HumanPlayer(deck,  twitter));
         for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum, deck));
-            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
+            System.out.println(player_list.get(i).getName() +", "+ discard_minimum);       //**For testing**
         }
         RoundOfPoker round = new RoundOfPoker(player_list, deck);
     }

@@ -32,6 +32,7 @@ public class AIPlayer extends PokerPlayer {
                 line = reader.readLine();
                 if(i==line_number){
                     ai_name = line;
+
                 }
             }
             reader.close();

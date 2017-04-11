@@ -10,8 +10,9 @@ import java.util.Scanner;
 */
 public class HumanPlayer extends PokerPlayer {
 TwitterInterface twitter;
-    public HumanPlayer(DeckOfCards deck, String name,TwitterInterface twitterInterface) {
-        super(name, deck);
+    public HumanPlayer(DeckOfCards deck ,TwitterInterface twitterInterface) {
+        super(null, deck);
+       name=getHumanName();
         twitter = twitterInterface;
         chips=11;       //testing
     }
@@ -24,12 +25,14 @@ TwitterInterface twitter;
         }
     }
 
-    public void setPlayer_name() {
+    public String getHumanName() {
         System.out.println("Please enter your name");
         Scanner input = new Scanner(System.in);
         String name = input.nextLine();
-        //setPlayer_name(name);
-    }
+
+    return name;}
+
+
 
     public boolean getFold(String word) {
 

@@ -21,7 +21,7 @@ public class GameOfPoker {
         Random rand = new Random();
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
         DeckOfCards deck = new DeckOfCards();
-        player_list.add(new HumanPlayer(deck, "human_player", twitter));
+        player_list.add(new HumanPlayer(deck,  twitter));
         for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum, deck));

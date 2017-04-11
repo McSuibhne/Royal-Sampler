@@ -4,16 +4,20 @@ public abstract class PokerPlayer {
     public static final int STARTING_CHIPS = 10;
     //private DeckOfCards deck;
     public HandOfCards hand;
-    public String name;
+    protected String name;
     public int chips;
     public int current_bet;
 
     //Hand is initialized.
     public PokerPlayer(String player_name, DeckOfCards card_deck) {
-        name = player_name;
+        name=player_name;
         //deck = card_deck;
         chips = STARTING_CHIPS;
         current_bet = 0;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public synchronized void deal(DeckOfCards deck){
@@ -34,7 +38,9 @@ public abstract class PokerPlayer {
         hand.sort();
     }
 
-
+    private String setPlayer_name(String name) {
+        return this.name;
+    }
     //TODO: Implement getBet in both AIPlayer (with AI) and HumanPlayer (ask Twitter). getBet should change current_bet
     //TODO:  -1 to indicate a fold and otherwise place their bet amount (call or raise).
     //TODO:    In summary, only current_bet options are (a)[-1]...fold  (b)[highest_bet]...call/see  (c)[>highest_bet]...raise
