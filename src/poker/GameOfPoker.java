@@ -1,53 +1,100 @@
 package poker;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
  * Created by Gavin on 03/04/2017.
  */
 public class GameOfPoker {
+    public static final int NUMBER_OF_BOTS = 4;
+    public static final int DISCARD_MINIMUM_RANGE = 20;
+    public static final int HUMAN_INDEX = 0;
+    TwitterInterface twitter;
+
+    public GameOfPoker(TwitterInterface twitterInterface){
+        twitter = twitterInterface;
+        Random rand = new Random();
+        ArrayList<PokerPlayer> player_list = new ArrayList<>();
+        DeckOfCards deck = new DeckOfCards();
+        player_list.add(new HumanPlayer(deck,  twitter));
+        for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
+            int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
+            player_list.add(new AIPlayer(i, discard_minimum, deck));
+            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
+        }
+
+        playGame(player_list, deck);        //Might be better to call this in the outer, main class if we make one instead of in constructor?
+    }                                       // If so, player_list and deck must become class variables and not be given to playGame as arguments.
 
     // Will wait for notice from twitter bot that a player has requested a game
     // Currently just called to start game from command line
-    // Any output/input will be to/from twitter once implemented
-
-    public void start(String twitterHandle, long statusID) {
-        long currentGameStatusID = statusID;
-        String currentHandle = twitterHandle;
-
+    public void playGame(ArrayList<PokerPlayer> player_list, DeckOfCards deck) {
+        Boolean game_over = false;
         Scanner scan = new Scanner(System.in);
 
-        System.out.println("Do you want to play Poker? Y/N");
-        String s = scan.next();
+        while(!game_over){
+            deck.reset();
+            RoundOfPoker round = new RoundOfPoker(player_list, deck);
 
-        if (s.equals("Y") || s.equals("y")) {
-            // game start
-            // check list for player already in game
-            // create human player in list 0
-            // create 3 AI players in list 1-3
-            // create array of player names?
-            // start round of poker
+            for(int i=0; i<player_list.size(); i++){
+                if(player_list.get(i).chips < RoundOfPoker.ANTE){
+                    System.out.println(player_list.get(i).name +" has run out of chips and is eliminated");
+                    if(i==HUMAN_INDEX){
+                        game_over = true;
+                    }
+                    player_list.remove(i);
+                    i--;
+                }
+            }
 
-            System.out.println("THIS WILL START A GAME"); // for testing
+            if(player_list.size()==1){
+                game_over = true;
+                System.out.println(player_list.get(HUMAN_INDEX).name +" has won. Congratulations!");
+            }
 
+            if(!game_over && player_list.get(HUMAN_INDEX).chips >= RoundOfPoker.ANTE) {
+                boolean valid_input;
+                do{
+                    System.out.println("Do you want to keep playing Poker? Y/N");
+                    String s = scan.next();
+                    valid_input = true;
 
-        } else if (s.equals("N") || s.equals("n")) {
-
-            System.out.println("Thank you and goodbye");
-        } else {
-
-            System.out.println("Please enter a valid input");
+                    if(s.equals("N") || s.equals("n")) {
+                        game_over = true;
+                    }
+                    else if(!s.equals("Y") && !s.equals("y")){
+                        System.out.println("Please enter a valid input");
+                        valid_input = false;
+                    }
+                }while(!valid_input);
+            }
         }
+        System.out.println("Thank you for playing");
     }
 
-    public static void main(String[] args) {
-
-        GameOfPoker game = new GameOfPoker();
-        game.start("me", 1);
-
-    }
 
 
     // main method initialising twitter listener and waiting for game start request
-
+    public static void main(String[] args) {
+        TwitterInterface twitterInterface = null;
+        try {
+            twitterInterface = new TwitterInterface();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        GameOfPoker gameOfPoker = new GameOfPoker(twitterInterface);
+       /* gameOfPoker.start();
+        boolean flag;
+        do {
+            flag = gameOfPoker.checkwanttoplay();
+            gameOfPoker.runRounds(flag);
+        }
+        while (flag != true);
+        gameOfPoker.exit();*/
+    }
 }

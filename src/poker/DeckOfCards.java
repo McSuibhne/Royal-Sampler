@@ -41,6 +41,7 @@ public class DeckOfCards {
         shuffle();
     }
 
+
     //Shuffles the deck and resets counter at the beginning of each round.
     public void reset() {
         next_card_position = 0;
