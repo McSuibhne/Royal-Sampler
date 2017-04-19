@@ -1,7 +1,5 @@
 package poker;
 
-import twitter4j.TwitterException;
-
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -10,7 +8,7 @@ import java.util.Scanner;
 */
 public class HumanPlayer extends PokerPlayer {
 TwitterInterface twitter;
-    public HumanPlayer(DeckOfCards deck ,TwitterInterface twitterInterface) {
+    public HumanPlayer(DeckOfCards deck, TwitterInterface twitterInterface, String tname, long tid) {
         super(null, deck);
        name=getHumanName();
         twitter = twitterInterface;

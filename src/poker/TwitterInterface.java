@@ -1,66 +1,27 @@
 package poker;
 
 import twitter4j.*;
-import twitter4j.api.*;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.Authorization;
-import twitter4j.auth.OAuth2Token;
-import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
-import twitter4j.util.function.Consumer;
 
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Orla on 20/03/2017.
  */
-public class TwitterInterface {
-    public static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
-    public static final int NAMES_FILE_LENGTH = 4;
+public class TwitterInterface extends TwitterListener {
+
+   // public static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
+   // public static final int NAMES_FILE_LENGTH = 4;
     TwitterFactory tf;
+
 
     Twitter twitter;
     List<Status> tweets;
-    Configuration config= setConfiguration();
-
     public TwitterInterface() throws IOException {
         tf = new TwitterFactory(config);
         twitter = tf.getInstance();
     }
-
-
-    public Configuration setConfiguration() {
-        ConfigurationBuilder configurationBuilder= new ConfigurationBuilder();
-        String ai_name = null;
-        try{
-
-            BufferedReader reader = new BufferedReader(new FileReader(NAMES_FILE));
-            String[] line = new String[NAMES_FILE_LENGTH];
-            for(int i=0; i<NAMES_FILE_LENGTH; i++){
-                line[i] = reader.readLine();
-
-            }
-            configurationBuilder.setDebugEnabled(true)
-                    .setOAuthConsumerKey(line[0])
-                    .setOAuthConsumerSecret(line[1])
-                    .setOAuthAccessToken(line[2])
-                    .setOAuthAccessTokenSecret(line[3]);
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        config=configurationBuilder.build();
-
-        return config; }
-
-
     public void postaStatus(String s) {
         String testStatus = s;
         Status status = null;
@@ -74,13 +35,13 @@ public class TwitterInterface {
 
     }
 
-/*10-04-17:
- *  Changed return type to "String" from "void" and added "return null" at end just to remove error
- *  in HumanPlayer line 65 and allow project to run. Just placeholder code, remove or replace it whenever.
- *  -Jonathan
- */
-    public String getUserTweet(String user) {
-
+    /*10-04-17:
+     *  Changed return type to "String" from "void" and added "return null" at end just to remove error
+     *  in HumanPlayer line 65 and allow project to run. Just placeholder code, remove or replace it whenever.
+     *  -Jonathan
+     */
+    public String getUserTweet(String user,String word) {
+        boolean flag=false;
         try {
             List<Status> statuses;
             if (user != null) {
@@ -92,26 +53,43 @@ public class TwitterInterface {
             }
             System.out.println("Showing @" + user + "'s user timeline.");
             for (Status status : statuses) {
-                System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+
+                if (status.getText ().contains (word)){
+
+                }
+                // System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
             }
         } catch (TwitterException te) {
             te.printStackTrace();
             System.out.println("Failed to get timeline: " + te.getMessage());
 
         }
-        return null;
+        return user;
     }
 
+    public long getStatusId(){
 
-    public void searchKeywords(String searchstring) {
+        return statusId;}
+
+
+    public boolean searchKeywords(String searchstring, long id) {
+        Status status = null;
+        boolean flag=false;
         try {
+
             Query query = new Query(searchstring);
             QueryResult result;
             result = twitter.search(query);
             tweets = result.getTweets();
-//tweets.get(1).getUser().getScreenName();
-            for (int i =0 ; i <tweets.size(); i++) {
-                System.out.println("@" + tweets.get(i).getUser().getScreenName() + " - " + tweets.get(i).getText());
+
+            for (int i = 0; i < tweets.size(); i++) {
+                if  (tweets.get (i).getId ()==id) {
+
+                    flag=true;
+
+                }
+                // System.out.println("@" + tweets.get(i).getUser().getScreenName() + " - " + tweets.get(i).getText() + " -" + tweets.get(i).getId());
+                //  id = tweets.get(0).getId();
             }
 
             // System.exit(0);
@@ -121,9 +99,10 @@ public class TwitterInterface {
 
         }
 
+        return flag;
     }
 
-    public void postreply(String answer) {
+    public void postreply(String answer, long replyId) {
         try {
             User user = twitter.verifyCredentials();
         } catch (TwitterException e) {
@@ -136,10 +115,10 @@ public class TwitterInterface {
             e.printStackTrace();
         }
         String name= statuses.get(0).getUser().getScreenName();
-       long statusId= statuses.get(0).getQuotedStatusId();
-         answer = "replying to @" + name + ": message is "+answer;
+
+
         StatusUpdate statusReply = new StatusUpdate(answer);
-        statusReply.setInReplyToStatusId(statusId);
+        statusReply.setInReplyToStatusId(replyId);
         try {
             twitter.updateStatus(statusReply);
             System.out.println("Status reply successfull "+ answer);
@@ -175,21 +154,28 @@ public class TwitterInterface {
 
 
 
-    public static void main(String[] args) {
-        TwitterInterface twit = null;
-        try {
-            twit = new TwitterInterface();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-   // twit.mentions();
-   //     twit.postreply("replying to tweetfingers crossed ");
-//twit.searchKeywords("#rsdealmein");
-
-//twit.postreply();
-    }
+    //  public static void main(String[] args) throws IOException {
+//        DeckOfCards deckOfCards=new DeckOfCards();
+//        TwitterInterface twit = null;
+//        try {
+//            twit = new TwitterInterface();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        twit.createListener("trump");
+//        twit.getStream ();
+//       /* HumanPlayer player= new HumanPlayer(deckOfCards,twit);
+//        long id=twit.searchKeywords("rsdealmein");
+//       player.getName();
+//        String anwer=  player.getName()+ " Please reply ";
+//        twit.postreply(anwer, id);*/
+////twit.searchKeywords("#rsdealmein");
+//
+////twit.postreply();*/
+    //   }
 
 
 
 
 }
+
