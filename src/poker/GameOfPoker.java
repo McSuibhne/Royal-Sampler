@@ -17,8 +17,8 @@ public class GameOfPoker {
     public static final int DISCARD_MINIMUM_RANGE = 20;
     public static final int HUMAN_INDEX = 0;
     TwitterInterface twitter;
-    String tname;
-    long tid;
+    public String tname;
+    public long tid;
 
     public GameOfPoker(TwitterInterface twitterInterface,String name,long id){
         twitter = twitterInterface;
@@ -40,7 +40,7 @@ public class GameOfPoker {
             player_list.add(new AIPlayer(i, discard_minimum, deck));
             System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
         }
-        playGame(player_list, deck);
+       // playGame(player_list, deck);
     }
     public void playGame(ArrayList<PokerPlayer> player_list, DeckOfCards deck) throws TwitterException {
         Boolean game_over = false;

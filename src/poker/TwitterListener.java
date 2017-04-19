@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,6 +40,7 @@ public class TwitterListener {
     StatusListener listener;
     TwitterStream stream;
     GameOfPoker game;
+    ArrayList<GameOfPoker> gamelist= new ArrayList();
     TwitterStreamFactory factory;
     public Configuration setConfiguration() {
         ConfigurationBuilder configurationBuilder= new ConfigurationBuilder();
@@ -68,6 +70,9 @@ public class TwitterListener {
         return config; }
 
     private final Object lock = new Object();
+
+
+
     public GameOfPoker startGame(String word, TwitterInterface twitterInterface) throws TwitterException {
 
         stream = new TwitterStreamFactory(config).getInstance();;
@@ -78,20 +83,23 @@ public class TwitterListener {
                 boolean dealin = status.getText ( ).contains (word);
 
 
-                game = new GameOfPoker (twitterInterface, twittername, statusId);
+           GameOfPoker     game = new GameOfPoker (twitterInterface, twittername, statusId);
                 if (dealin==true){
-                    synchronized (lock) {
+                   // synchronized (lock) {
+                        gamelist.add(game);
 
                         try {
+
                             game.createPlayer ( );
+                           // game.playGame(player_list, deck);
                         } catch (TwitterException e) {
                             e.printStackTrace ( );
-                        }
+                       // }
 
 
                     }
                     stream.shutdown ( );
-                    game.notify ( );
+//                    game.notify ( );
                     System.out.println ("unlocked");
 
                 }
@@ -163,20 +171,21 @@ public class TwitterListener {
 
             public void onStatus(Status status) {
 
-                while (status.getText ( ).contains (word)) {
-                    flag[0] =true;
-                    twittername = "@" + status.getUser ( ).getScreenName ( );
-                    statusId = status.getId ( );
-                    synchronized (lock) {
-                      //  game.stopGame (statusId);
-                    }
+             String t = "@" + status.getUser ( ).getScreenName ( );
+                   long id= status.getId ( );
+                  for (int i=0; i< gamelist.size();i++){
+                 synchronized(gamelist)
+                 {if( gamelist.get(i).tname.equals(t)){
+                         gamelist.remove(i);
+                     }}
+                  }
 
                     stream.shutdown ( );
-                    game.notify ( );
+                  //  game.notify ( );
                     System.out.println ("unlocked");
 
                 }
-            }
+
 
             @Override
             public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
@@ -267,7 +276,7 @@ public class TwitterListener {
         // String keywords= "rsdealmein"
         twitterInterface.startGame ("rsdealmein",twitterInterface);
 
-
+        twitterInterface.stopGame ("rsdealmeout");
     }
 
 
