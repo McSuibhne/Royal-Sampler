@@ -1,6 +1,5 @@
 package poker;
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -11,7 +10,7 @@ public class RoundOfPoker {
     public static final int ANTE = 1;
     private int pot;
 
-    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck) {
+    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck, TwitterInterface twitter) {
         pot = 0;
         ArrayList<PokerPlayer> live_players = new ArrayList<>();
         live_players = (ArrayList<PokerPlayer>) player_list.clone();
@@ -214,13 +213,13 @@ public class RoundOfPoker {
         ArrayList<PokerPlayer> player_list = new ArrayList<>();
         Random rand = new Random();
         TwitterInterface twitter = null;
-        player_list.add(new HumanPlayer(deck, twitter));
+        player_list.add(new HumanPlayer(deck, twitter, tname, tid));
         for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum, deck));
             System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
         }
-        RoundOfPoker round = new RoundOfPoker(player_list, deck);
+        RoundOfPoker round = new RoundOfPoker(player_list, deck, twitter);
     }
 
 }
