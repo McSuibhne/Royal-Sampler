@@ -288,7 +288,7 @@ public class TwitterListener {
 
     public static void main(String[] args) throws TwitterException, IOException {
         TwitterInterface twitterInterface= new TwitterInterface ();
-        String[] keywords = {"rsdealmein","rsdealmeout"};
+        String[] keywords = {"#rsdealmein","#rsdealmeout"};
         twitterInterface.startGame (keywords,twitterInterface);
 
        // twitterInterface.stopGame ("rsdealmeout");

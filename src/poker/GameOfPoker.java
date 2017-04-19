@@ -19,6 +19,7 @@ public class GameOfPoker {
     TwitterInterface twitter;
     public String tname;
     public long tid;
+    ArrayList<PokerPlayer> player_list;
 
     public GameOfPoker(TwitterInterface twitterInterface,String name,long id){
         twitter = twitterInterface;
@@ -32,7 +33,7 @@ public class GameOfPoker {
     // Currently just called to start game from command line
     public void createPlayer() throws TwitterException {
         Random rand = new Random();
-        ArrayList<PokerPlayer> player_list = new ArrayList<>();
+        player_list = new ArrayList<>();
         DeckOfCards deck = new DeckOfCards();
         player_list.add(new HumanPlayer(deck,  twitter,tname, tid));
         for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
@@ -43,11 +44,14 @@ public class GameOfPoker {
         playGame(player_list, deck);
     }
     public void playGame(ArrayList<PokerPlayer> player_list, DeckOfCards deck) throws TwitterException {
+        HumanPlayer temp=(HumanPlayer) player_list.get(0);
+        twitter.postreply(temp.getName() +" You have tweeted the hashtag to play Poker\nWelcome to RoyalSampler Poker ",temp);
         Boolean game_over = false;
         Scanner scan = new Scanner(System.in);
 
         while(!game_over){
             deck.reset();
+            twitter.postreply(temp.getName()+" New Round:",temp);
             RoundOfPoker round = new RoundOfPoker(player_list, deck,twitter);
 
             for(int i=0; i<player_list.size(); i++){
@@ -84,7 +88,7 @@ public class GameOfPoker {
             }
         }
         System.out.println("Thank you for playing");
-        twitter.postreply ("Thankyou for playing",player_list.get(0));
+        twitter.postreply (temp.getName()+" You have tweetd the hashtag to end the game \n" + "Thank You for playing",temp);
     }
  //   public void stopGame(long i){
   //
