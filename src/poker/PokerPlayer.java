@@ -1,5 +1,7 @@
 package poker;
 
+import java.io.IOException;
+
 public abstract class PokerPlayer {
     public static final int STARTING_CHIPS = 10;
     //private DeckOfCards deck;
@@ -21,6 +23,7 @@ public abstract class PokerPlayer {
     }
 
     public synchronized void deal(DeckOfCards deck){
+
         hand = new HandOfCards(deck);
     }
 
@@ -33,6 +36,14 @@ public abstract class PokerPlayer {
                 discards++;
             }
         }
+        TwitterInterface twit = null;
+        try {
+            twit = new TwitterInterface();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       // twit.postreply(getName() + "Number of cards discarded: " + discards, h.getTweetId());
         System.out.println("Number of cards discarded: " + discards);
 
         hand.sort();

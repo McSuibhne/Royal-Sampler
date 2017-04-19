@@ -1,5 +1,6 @@
 package poker;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -9,13 +10,20 @@ import java.util.*;
 public class RoundOfPoker {
     public static final int ANTE = 1;
     private int pot;
-
-    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck, TwitterInterface twitter) {
+    TwitterInterface twitter;
+    ArrayList<PokerPlayer> live_players = new ArrayList<>();
+    DeckOfCards d;
+    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards deck,TwitterInterface twitterInterface) {
         pot = 0;
-        ArrayList<PokerPlayer> live_players = new ArrayList<>();
+        d= deck;
+        twitter= twitterInterface;
+
         live_players = (ArrayList<PokerPlayer>) player_list.clone();
-        playRound(live_players, deck);   //It's probably better to call playRound from within the higher
-                                         // higher class (game) instead of in the constructor.
+        playRound(live_players, d);   //It's probably better to call playRound from within the higher
+        // higher class (game) instead of in the constructor.
+    }
+    public void runround(){
+        playRound (live_players,d);
     }
 
     public void playRound(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
@@ -42,7 +50,12 @@ public class RoundOfPoker {
             checkForWinner(live_players);
             winner_index = findWinner(live_players);
         }
-        System.out.println(live_players.get(winner_index).name +" has won the round");
+
+        HumanPlayer p = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
+        long id= p.getTweetId();
+
+        twitter.postreply(p.getName()+"Player" + live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
+        System.out.println(live_players.get(winner_index).getName() +" has won the round");
         live_players.get(winner_index).chips += pot;
 
     }
@@ -57,7 +70,11 @@ public class RoundOfPoker {
             else {
                 chip_string = " chips";
             }
-            System.out.println(live_players.get(i).name + " has " + live_players.get(i).chips + chip_string);
+
+           HumanPlayer p = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
+            long id= p.getTweetId();
+            twitter.postreply(p.getName()+" "+live_players.get(i).getName () + " you have " + live_players.get(i).chips + chip_string,live_players.get(0));
+          //  System.out.println(live_players.get(i).getName () + " has " + live_players.get(i).chips + chip_string);
         }
     }
 
@@ -69,7 +86,7 @@ public class RoundOfPoker {
                 pot += ANTE;
             }
             else {
-                System.out.println(live_players.get(i).name + "Has run out of chips and is eliminated from the round");
+                System.out.println(live_players.get(i).getName () + "Has run out of chips and is eliminated from the round");
                 if(i == GameOfPoker.HUMAN_INDEX) {
                     isHumanBusted = true;
                 }
@@ -80,9 +97,12 @@ public class RoundOfPoker {
     }
 
     public void dealCards(ArrayList<PokerPlayer> live_players, DeckOfCards deck) {
+       deck.reset();
         for(int i = 0; i < live_players.size(); i++) {
+
             live_players.get(i).deal(deck);
-            System.out.println(live_players.get(i).name +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+
+            System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
         try {
             HumanPlayer temp_human = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
@@ -113,7 +133,7 @@ public class RoundOfPoker {
                 if(opener_indexes.size() > 1 && i == opener_indexes.size() - 1) {
                     System.out.print("and ");
                 }
-                System.out.print(live_players.get(opener_indexes.get(i)).name);
+                System.out.print(live_players.get(opener_indexes.get(i)).getName());
             }
             if(opener_indexes.size() > 0) {
                 Random rand = new Random();
@@ -132,7 +152,10 @@ public class RoundOfPoker {
         int calls_since_raise = 0;
         boolean betting_finished = false;
 
-        System.out.println(live_players.get(opener_index).name + " will open");
+        HumanPlayer p = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
+        long id= p.getTweetId();
+twitter.postreply(p.getName()+" Player "+live_players.get(opener_index).getName() + " will open",live_players.get(0));
+        System.out.println(live_players.get(opener_index).getName() + " will open");
 
         for(int i=opener_index; !betting_finished; i++){
             PokerPlayer current_player = live_players.get(i % live_players.size());
@@ -144,7 +167,7 @@ public class RoundOfPoker {
 
             current_player.getBet(highest_bet);
             if(current_player.current_bet == -1) {
-                System.out.println(current_player.name +" folds");
+                System.out.println(current_player.getName() +" folds");
                 live_players.remove(i % live_players.size());
                 i+=2;
                 if(live_players.size() <= 1){
@@ -186,6 +209,12 @@ public class RoundOfPoker {
             live_players.get(i).discards();
             //  live_players.get(i).discard_cards(array);
             System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
+            try {
+                HumanPlayer temp_human = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
+                temp_human.outputHand();
+            }
+            catch(Exception e) {    //Should never be reached, live_players.get(0) is either always the HumanPlayer or the game is over
+            }
         }
 
     }
@@ -193,6 +222,7 @@ public class RoundOfPoker {
     public void checkForWinner(ArrayList<PokerPlayer> live_players) {
         //test code will be removed
         for (int i = 0; i < live_players.size(); i++) {
+
             System.out.println(live_players.get(i).getName() + " has a hand value of " + live_players.get(i).hand.getGameValue());
 
         }
@@ -201,6 +231,7 @@ public class RoundOfPoker {
     public int findWinner(ArrayList<PokerPlayer> live_players) {
         int best_hand_index = 0;
         for(int i=1; i<live_players.size(); i++){
+
             if(live_players.get(i).hand.getGameValue() > live_players.get(best_hand_index).hand.getGameValue()) {
                 best_hand_index = i;
             }
@@ -209,17 +240,17 @@ public class RoundOfPoker {
     }
 
     public static void main(String[] args) {
-        DeckOfCards deck = new DeckOfCards();
-        ArrayList<PokerPlayer> player_list = new ArrayList<>();
-        Random rand = new Random();
-        TwitterInterface twitter = null;
-        player_list.add(new HumanPlayer(deck, twitter, tname, tid));
-        for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
-            int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
-            player_list.add(new AIPlayer(i, discard_minimum, deck));
-            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
-        }
-        RoundOfPoker round = new RoundOfPoker(player_list, deck, twitter);
+//        DeckOfCards deck = new DeckOfCards();
+//        ArrayList<PokerPlayer> player_list = new ArrayList<>();
+//        Random rand = new Random();
+//        TwitterInterface twitter = null;
+//        player_list.add(new HumanPlayer(deck, twitter));
+//        for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
+//            int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
+//            player_list.add(new AIPlayer(i, discard_minimum, deck));
+//            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
+//        }
+//        RoundOfPoker round = new RoundOfPoker(player_list, deck);
     }
 
 }

@@ -52,7 +52,7 @@ public class GameOfPoker {
 
             for(int i=0; i<player_list.size(); i++){
                 if(player_list.get(i).chips < RoundOfPoker.ANTE){
-                    System.out.println(player_list.get(i).name +" has run out of chips and is eliminated");
+                    System.out.println(player_list.get(i).getName() +" has run out of chips and is eliminated");
                     if(i==HUMAN_INDEX){
                         game_over = true;
                     }
@@ -63,23 +63,32 @@ public class GameOfPoker {
 
             if(player_list.size()==1){
                 game_over = true;
-                System.out.println(player_list.get(HUMAN_INDEX).name +" has won. Congratulations!");
+                System.out.println(player_list.get(HUMAN_INDEX).getName() +" has won. Congratulations!");
             }
 
-            if(!game_over && player_list.get(HUMAN_INDEX).chips >= RoundOfPoker.ANTE) {
-
-                boolean valid_input = twitter.searchKeywords ("rsdealmeout",tid);
+            if(!game_over && player_list.get(HUMAN_INDEX).chips > RoundOfPoker.ANTE) {
+                boolean valid_input;
                 do{
-                    round.playRound (player_list, deck);
-//
+                    System.out.println("Do you want to keep playing Poker? Y/N");
+                    String s = scan.next();
+                    valid_input = true;
+
+                    if(s.equals("N") || s.equals("n")) {
+                        game_over = true;
+                    }
+                    else if(!s.equals("Y") && !s.equals("y")){
+                        System.out.println("Please enter a valid input");
+                        valid_input = false;
+                    }
                 }while(!valid_input);
             }
         }
         System.out.println("Thank you for playing");
+        twitter.postreply ("Thankyou for playing",player_list.get(0));
     }
-    public void stopGame(long i){
-        twitter.postreply ("Thankyou for playing",i );
-    }
+ //   public void stopGame(long i){
+  //
+  //  }
 
 
 
