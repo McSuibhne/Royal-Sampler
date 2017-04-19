@@ -1,18 +1,26 @@
 package poker;
 
+import twitter4j.TwitterException;
+
 import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Created by Orla on 17/03/2017.
-*/
+ */
 public class HumanPlayer extends PokerPlayer {
-TwitterInterface twitter;
-    public HumanPlayer(DeckOfCards deck, TwitterInterface twitterInterface, String tname, long tid) {
+    TwitterInterface twitter;
+    public long tweetId;
+    public HumanPlayer(DeckOfCards deck ,TwitterInterface twitterInterface,String twittername, long id) {
         super(null, deck);
-       name=getHumanName();
+        name=twittername;
+        tweetId= id;
         twitter = twitterInterface;
         chips=11;       //testing
+    }
+
+    public void setTweetId(long tweetId) {
+        this.tweetId = tweetId;
     }
 
     public boolean getRaise(String word) {
@@ -23,12 +31,12 @@ TwitterInterface twitter;
         }
     }
 
-    public String getHumanName() {
-        System.out.println("Please enter your name");
-        Scanner input = new Scanner(System.in);
-        String name = input.nextLine();
-
-    return name;}
+//    public String getHumanName() {
+////        System.out.println("Please enter your name");
+////        Scanner input = new Scanner(System.in);
+//        String name =input.nextLine ();
+//String name = twitter.getTwittername ();
+//    return name;}
 
 
 
@@ -47,6 +55,7 @@ TwitterInterface twitter;
 
 
         boolean[] discard_cards = {false, false, false, false, false};
+      //  twitter.postreply("Enter 1 to discard and 0 to keep",getTweetId());
         System.out.println("Enter 1 to discard and 0 to keep");
         for(int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
             int j = scanner.nextInt();
@@ -87,7 +96,7 @@ TwitterInterface twitter;
         }
 
 
-        String status = twit.getUserTweet("OrlaCullen15");
+        String status = twit.getUserTweet("OrlaCullen15", null);
 
         //Process char String str = "true false true false false";
 
@@ -111,32 +120,37 @@ TwitterInterface twitter;
         return discard_cards;
     }
 
+    public long getTweetId() {
+        return tweetId;
+    }
+
     public void outputHand(){
         //TODO: Small amount of twitter code to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
-        System.out.println(getName()+" your hand :"+ hand.toString()); //TEMPORARY!
+        String answer=getName()+" your hand :"+ hand.toString();
+        long id = getTweetId();
+        twitter.postreply (answer,this);
+       // System.out.println(getName()+" your hand :"+ hand.toString()); //TEMPORARY!
     }
 
 
     public static void main(String[] args) {
-      /*  DeckOfCards deck = new DeckOfCards();
-        HumanPlayer player = new HumanPlayer(deck);
-        TwitterInterface twit = null;
-        try {
-            twit = new TwitterInterface();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-         String s =player.hand.toString();
-          System.out.println("Before discard: " + player.hand.toString());
-//twit.getUserTweet("OrlaCullen15");
-
-        twit.postreply("This is your Hand"+player.hand.toString(),0);
-        boolean[] discardlist = player.discardTList();
-        player.discard_cards(discardlist);
-        //System.out.println("Discards: " + );
-        twit.postreply("Hand after discard" +player.hand.toString(),0);
-        System.out.println("After discard: " + player.hand.toString());
-    }*/
+//        DeckOfCards deck = new DeckOfCards();
+//
+//        TwitterInterface twit = null;
+//        try {
+//            twit = new TwitterInterface();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        HumanPlayer player = new HumanPlayer(deck,twit);
+//        twit.postreply("This is your Hand"+player.hand.toString(),0);
+//        boolean[] discardlist = player.discardTList();
+//        player.discard_cards(discardlist);
+//        //System.out.println("Discards: " + );
+//        twit.postreply("Hand after discard" +player.hand.toString(),0);
+//        System.out.println("After discard: " + player.hand.toString());
     }
 }
+
 

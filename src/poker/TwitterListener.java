@@ -168,7 +168,7 @@ public class TwitterListener {
                     twittername = "@" + status.getUser ( ).getScreenName ( );
                     statusId = status.getId ( );
                     synchronized (lock) {
-                        game.stopGame (statusId);
+                      //  game.stopGame (statusId);
                     }
 
                     stream.shutdown ( );
