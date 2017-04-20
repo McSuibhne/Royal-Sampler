@@ -22,6 +22,11 @@ public class RoundOfPoker {
         playRound(live_players, d);   //It's probably better to call playRound from within the higher
         // higher class (game) instead of in the constructor.
     }
+
+    public ArrayList<PokerPlayer> getLive_players() {
+        return live_players;
+    }
+
     public void runround(){
         playRound (live_players,d);
     }
@@ -190,8 +195,7 @@ public class RoundOfPoker {
                     //twitter.postreply(current_player.getName() + " raises by",live_players.get(0));
                     System.out.println(current_player.getName() + " raises by " + current_player.current_bet);
                 } else {
-                    answer = answer + new StringBuilder().append(current_player.getName()).append(" sees").append(highest_bet).append(" and raises by ")
-                            .append((current_player.current_bet - highest_bet)).append("to").append(current_player.current_bet).append("\n").toString();
+                    answer = answer + new StringBuilder().append(current_player.getName()).append(" sees").append(highest_bet).append(" and raises by ").append((current_player.current_bet - highest_bet)).append("to").append(current_player.current_bet).append("\n").toString();
                     System.out.println(current_player.getName() + " sees " + highest_bet + " and raises by " + (current_player.current_bet - highest_bet) + " to " + current_player.current_bet);
                 }
                 highest_bet = current_player.current_bet;
@@ -199,7 +203,7 @@ public class RoundOfPoker {
             }
 
         }
-        twitter.postreply(answer, live_players.get(0));
+        twitter.postreply(answer,getLive_players().get(0));
         for (int i = 0; i < live_players.size(); i++) {
             live_players.get(i).chips -= live_players.get(i).current_bet;           //TODO; IMPROVE THIS! TEMPORARY CODE, SHOULD BE DONE INSIDE MAIN LOOP
             pot += live_players.get(i).current_bet;

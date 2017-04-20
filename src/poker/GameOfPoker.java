@@ -19,6 +19,7 @@ public class GameOfPoker {
     TwitterInterface twitter;
     public String tname;
     public long tid;
+    DeckOfCards deck;
     ArrayList<PokerPlayer> player_list;
 
     public GameOfPoker(TwitterInterface twitterInterface,String name,long id){
@@ -34,7 +35,7 @@ public class GameOfPoker {
     public void createPlayer() throws TwitterException {
         Random rand = new Random();
         player_list = new ArrayList<>();
-        DeckOfCards deck = new DeckOfCards();
+         deck = new DeckOfCards();
         player_list.add(new HumanPlayer(deck,  twitter,tname, tid));
         for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+((100)-(DISCARD_MINIMUM_RANGE*i));
