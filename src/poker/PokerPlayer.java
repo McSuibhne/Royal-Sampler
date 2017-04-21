@@ -43,7 +43,7 @@ public abstract class PokerPlayer {
             e.printStackTrace();
         }
 
-       // twit.postreply(getName() + "Number of cards discarded: " + discards, h.getTweetId());
+
         System.out.println("Number of cards discarded: " + discards);
 
         hand.sort();

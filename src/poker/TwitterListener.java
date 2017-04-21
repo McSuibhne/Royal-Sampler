@@ -73,37 +73,51 @@ public class TwitterListener {
 
 
 
-    public GameOfPoker startGame(String word, TwitterInterface twitterInterface) throws TwitterException {
+    public GameOfPoker startGame(String[] word, TwitterInterface twitterInterface) throws TwitterException {
 
         stream = new TwitterStreamFactory(config).getInstance();;
         StatusListener listener = new StatusListener() {
             public void onStatus(Status status) {
+                String t = "@" + status.getUser ( ).getScreenName ( );
+                long id= status.getId ( );
                 twittername = "@" + status.getUser ( ).getScreenName ( );
                 statusId = status.getId ( );
-                boolean dealin = status.getText ( ).contains (word);
 
+                    if (status.getText().contains(word[0])){
+                        GameOfPoker     game = new GameOfPoker (twitterInterface, twittername, statusId);
+                            gamelist.add(game);
 
-           GameOfPoker     game = new GameOfPoker (twitterInterface, twittername, statusId);
-                if (dealin==true){
-                   // synchronized (lock) {
-                        gamelist.add(game);
+                            try {
 
-                        try {
+                                game.createPlayer();
+                                // game.playGame(player_list, deck);
+                            } catch (TwitterException e) {
+                                e.printStackTrace();
+                               }
+                        }
 
-                            game.createPlayer ( );
-                           // game.playGame(player_list, deck);
-                        } catch (TwitterException e) {
-                            e.printStackTrace ( );
-                       // }
+                    else if(status.getText().contains(word[1])) {
 
+                        for (int i=0; i< gamelist.size();i++){
 
+                            if( gamelist.get(i).tname.equals(t)){
+                                //gamelist.get().sayGoodBye();
+                                gamelist.remove(i);
+
+                            }                       }
                     }
-                    stream.shutdown ( );
+
+
+               /// boolean dealin = status.getText ( ).contains (word[]);
+
+
+
+
 //                    game.notify ( );
-                    System.out.println ("unlocked");
+                    System.out.println (status.getText());
 
                 }
-            }
+
 
 
             public void onDeletionNotice(
@@ -155,7 +169,8 @@ public class TwitterListener {
         System.out.println("returning statuses");
         stream.shutdown();
 
-        return game;}
+        return game;
+    }
     public boolean stopGame(String word) throws TwitterException {
 
         stream = new TwitterStreamFactory (config).getInstance ( );
@@ -273,10 +288,10 @@ public class TwitterListener {
 
     public static void main(String[] args) throws TwitterException, IOException {
         TwitterInterface twitterInterface= new TwitterInterface ();
-        // String keywords= "rsdealmein"
-        twitterInterface.startGame ("rsdealmein",twitterInterface);
+        String[] keywords = {"#rsdealmein","#rsdealmeout"};
+        twitterInterface.startGame (keywords,twitterInterface);
 
-        twitterInterface.stopGame ("rsdealmeout");
+       // twitterInterface.stopGame ("rsdealmeout");
     }
 
 
