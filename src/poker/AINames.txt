@@ -1,80 +1,60 @@
-Animal
-Ax
-Barbarian
-Beau Beverly
-Berzerker
-Big Boss Man
-Big Josh
-Blake Beverly
-Bret Hart
-Brian Pillman
-Cactus Jack
-Crush
-Davey Smith
-Diamond Studd
-Dusty Rhodes
-Earthquake
-El Matador
-Greg Valentine
-Harvey Wimpleman
-Hawk
-Hercules
-Hulk Hogan
-I.R.S.
-Jake Roberts
-Jim Duggan
-Jimmy Garvin
-Jimmy Hart
-Jim Neidhart
-Jimmy Snuka
-John Cena
-Kato
-Lex Luger
-Marty Janetty
-Missy Hyatt
-Mountie
-Nikita Koloff
-Nobbs
-Owen Hart
-Papa Shango
-Paul Bearer
-Randy Savage
-Repo Man
-Ric Flair
-Rick Martel
-Roddy Piper
-Saggs
-Sensational Sherri
-Sgt. Slaughter
-Shawn Michaels
-Sid Justice
-Steve Austin
-Sting
-Tanaka
-Tatanka
-Ted Dibiase
-Terrence Taylor
-Tom Zenk
-Ultimate Warrior
-Undertaker
-Warlord
-Fred
-Bruce
-Harry
-Hermione
-Dumbledore
-Annabelle
-Bart
-Raven
-Phoenix
-Mystique
-Nightcrawler
-Cyclops
-Colossus
-Deadpool
-Wolverine
-Katniss
-Thor
-Maximus
-Zena
-Storm
+Animal;male
+Ax;male
+Barbarian;male
+Beau Beverly;male
+Berzerker;male
+Big Boss Man;male
+Big Josh;male
+Blake Beverly;male
+Bret Hart;male
+Brian Pillman;male
+Cactus Jack;male
+Crush;male
+Davey Smith;male
+Diamond Studd;male
+Dusty Rhodes;male
+Earthquake;male
+El Matador;male
+Greg Valentine;male
+Harvey Wimpleman;male
+Hawk;male
+Hercules;male
+Hulk Hogan;male
+I.R.S.;male
+Jake Roberts;male
+Jim Duggan;male
+Jimmy Garvin;male
+Jimmy Hart;male
+Jim Neidhart;male
+Jimmy Snuka;male
+John Cena;male
+Kato;male
+Lex Luger;male
+Mad Maxine;female
+Marty Janetty;male
+Miss Elizabeth;female
+Missy Hyatt;female
+Mountie;male
+Nikita Koloff;male
+Nobbs;male
+Owen Hart;male
+Papa Shango;male
+Paul Bearer;male
+Randy Savage;male
+Repo Man;male
+Ric Flair;male
+Rick Martel;male
+Roddy Piper;male
+Saggs;male
+Sgt. Slaughter;male
+Shawn Michaels;male
+Sid Justice;male
+Steve Austin;male
+Sting;male
+Tatanka;male
+Ted Dibiase;male
+Terrence Taylor;male
+Tom Zenk;male
+Ultimate Warrior;male
+Undertaker;male
+The Warlord;male

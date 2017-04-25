@@ -21,8 +21,12 @@ public class TwitterInterface extends TwitterListener {
         twitter = tf.getInstance();
     }
 
-    public void postreply(String answer, PokerPlayer pokerPlayer) {
+    public void postReply(String answer, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
+
+        if(answer.length() > 144){
+            answer = answer.substring(0, 144);
+        }
 
         long replyId = humanPlayer.getTweetId();
 
@@ -32,9 +36,8 @@ public class TwitterInterface extends TwitterListener {
 
         try {
             twitter.updateStatus(statusReply);
-            System.out.println("Status reply successfull " + answer);
+            System.out.println(answer);
             List<Status> h = twitter.getHomeTimeline();
-            System.out.println(h.get(0).getText());
             for (int i = 0; i < h.size(); i++) {
                 if (h.get(i).getInReplyToStatusId() == replyId) {
                     humanPlayer.setTweetId(h.get(i).getId());
@@ -45,6 +48,13 @@ public class TwitterInterface extends TwitterListener {
             // handle exception
         }
     }
+
+
+    //Should be removed before submission. Rename to postReply to easily switch to console output instead of twitter.
+    public void testpostreply(String answer, PokerPlayer pokerPlayer) {
+        System.out.println(answer);
+    }
+
 
     public String getTweet(String word, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;

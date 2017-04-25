@@ -22,7 +22,7 @@ public class DeckOfCards {
     //Constructs the sorted deck of 52 playing cards, then calls shuffle() to shuffle and initialize
     private void buildDeck(){
         int current_value;
-        char[] suit_list = {PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS, PlayingCard.SPADES};
+        String[] suit_list = {PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS, PlayingCard.SPADES};
         String[] name_list = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
         for(int i = 0; i < suit_list.length; i++){
