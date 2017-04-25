@@ -1,5 +1,9 @@
 package poker;
 
+import twitter4j.TwitterException;
+import twitter4j.UploadedMedia;
+
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -20,7 +24,7 @@ public class RoundOfPoker {
 
         live_players = (ArrayList<PokerPlayer>) player_list.clone();
         playRound(live_players, d);   //It's probably better to call playRound from within the higher
-        // higher class (game) instead of in the constructor.
+        // higher class (game) instead of in the constructor.F
     }
 
     public ArrayList<PokerPlayer> getLive_players() {
@@ -112,7 +116,11 @@ public class RoundOfPoker {
 
             System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
         }
-       twitter.postreply(live_players.get(0).getName() +" \nYour Hand is "+ live_players.get(0).hand.toString(),live_players.get(0));
+
+        Picture picture = new Picture(live_players.get(0).hand.get());
+        BufferedImage image = picture.createPicture();
+
+       twitter.postImage(live_players.get(0).hand, live_players.get(0).getName() +"\nYour Hand is "+ live_players.get(0).hand.toString(), live_players.get(0));
     }
 
     public int findOpener(ArrayList<PokerPlayer> live_players) {
@@ -218,7 +226,7 @@ public class RoundOfPoker {
 
             System.out.println(live_players.get(i).getName() + ":\t" + live_players.get(i).hand.toString()); //Testing only!
         }
-        twitter.postreply(live_players.get(0).getName() +"\n Hand after discard "+ live_players.get(0).hand.toString(),live_players.get(0));
+        twitter.postImage(live_players.get(0).hand, live_players.get(0).getName() + "\n Hand after discard "+ live_players.get(0).hand.toString(), live_players.get(0));
     }
 
     public void checkForWinner(ArrayList<PokerPlayer> live_players) {

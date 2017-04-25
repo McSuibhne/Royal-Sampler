@@ -1,7 +1,10 @@
 package poker;
 
 import twitter4j.*;
+import twitter4j.media.ImageUpload;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +26,40 @@ public class TwitterInterface extends TwitterListener {
 
     public void postreply(String answer, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
-
         long replyId = humanPlayer.getTweetId();
 
         StatusUpdate statusReply = new StatusUpdate(answer);
         statusReply.setInReplyToStatusId(replyId);
 
-
         try {
             twitter.updateStatus(statusReply);
             System.out.println("Status reply successfull " + answer);
+            List<Status> h = twitter.getHomeTimeline();
+            System.out.println(h.get(0).getText());
+            for (int i = 0; i < h.size(); i++) {
+                if (h.get(i).getInReplyToStatusId() == replyId) {
+                    humanPlayer.setTweetId(h.get(i).getId());
+                    break;
+                }
+            }
+        } catch (TwitterException ex) {
+            // handle exception
+        }
+    }
+
+    public void postImage(HandOfCards currentHand, String answer, PokerPlayer pokerPlayer) {
+        HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
+        File file = new File("src/twitter_output/hand_picture.png");
+        long replyId = humanPlayer.getTweetId();
+        ImageUpload image = null;
+
+        StatusUpdate statusReply = new StatusUpdate(answer);
+        statusReply.setInReplyToStatusId(replyId);
+        statusReply.setMedia(file);
+
+        try {
+            twitter.updateStatus(statusReply);
+            System.out.println("Status reply successfull " + currentHand);
             List<Status> h = twitter.getHomeTimeline();
             System.out.println(h.get(0).getText());
             for (int i = 0; i < h.size(); i++) {

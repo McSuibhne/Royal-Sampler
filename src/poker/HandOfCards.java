@@ -510,6 +510,11 @@ public class HandOfCards {
         return hand_string;
     }
 
+    // Added by Gavin for Picture functionality
+    public PlayingCard[] get() {
+        return card_hand;
+    }
+
     //***FOR TESTING ONLY***
     //No setter is needed for final program, method just allows for card values to be set to test
     // unlikely hands such as Royal Flush etc. Will be removed later to ensure encapsulation.

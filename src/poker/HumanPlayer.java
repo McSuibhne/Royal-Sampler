@@ -3,6 +3,7 @@ package poker;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -96,6 +97,12 @@ public class HumanPlayer extends PokerPlayer {
         return discard_cards;
     }
 
+    public BufferedImage createImage() {
+        Picture picture = new Picture(hand.get());
+        BufferedImage image = picture.createPicture();
+        return image;
+    }
+
 
     public long getTweetId() {
         return tweetId;
@@ -103,7 +110,9 @@ public class HumanPlayer extends PokerPlayer {
 
     public static void main(String[] args) {
 
+
     }
+
 }
 
 
