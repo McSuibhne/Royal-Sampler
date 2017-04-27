@@ -253,7 +253,7 @@ public class RoundOfPoker {
         for(int i = GameOfPoker.HUMAN_INDEX + 1; i < live_players.size(); i++){
             tweet_message += live_players.get(i).getName() +" discards "+ live_players.get(i).discards +" cards\n";
         }
-twitter.postImage(live_players.get(0).hand, tweet_message, live_players.get(0));
+        twitter.postImage(live_players.get(0).hand.card_hand, tweet_message, live_players.get(0));
     }
 
     public int findWinner() {

@@ -96,7 +96,8 @@ public class TwitterInterface  {
         }
     }
 
-    public void postImage(HandOfCards currentHand, String answer, PokerPlayer pokerPlayer) {
+    public void postImage(PlayingCard[] currentHand, String answer, PokerPlayer pokerPlayer) {
+
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
         File file = new File("src/twitter_output/hand_picture.png");
         long replyId = humanPlayer.getTweetId();
