@@ -1,36 +1,36 @@
 package poker;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
- * Created by Orla on 17/03/2017.
+ *
  */
 public class HumanPlayer extends PokerPlayer {
-    TwitterInterface twitter;
-    public long tweetId;
-    public HumanPlayer(TwitterInterface twitter_interface, String twitter_name, long id) {
+    TwitterInterface twitter_interface;
+    public long last_tweet_id;
+
+    public HumanPlayer(TwitterInterface twitter, String twitter_name, long tweet_id) {
         super(null);
         name = twitter_name;
-        tweetId = id;
-        twitter = twitter_interface;
+        last_tweet_id = tweet_id;
+        twitter_interface = twitter;
     }
 
     public void setTweetId(long tweet_id) {
-        tweetId = tweet_id;
+        last_tweet_id = tweet_id;
     }
 
 
     public long getTweetId() {
-        return tweetId;
+        return last_tweet_id;
     }
 
 
     public boolean[] discard() {
-        twitter.postReply("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
-        twitter.getTweet("#rsdiscard", this);
+        twitter_interface.postReply("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
+        twitter_interface.getTweet("#rsdiscard", this);
         boolean[] discard_cards = {false, false, false, false, false};
-        String status = twitter.getTweet("#rsdiscard", this);
+        String status = twitter_interface.getTweet("#rsdiscard", this);
         char[] status_text = status.toCharArray();
         int discards_entered = 0;
         boolean uses_zero = false;
@@ -72,11 +72,11 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public void getBet(int highest_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players) {
-        twitter.postReply("Please tweet #rsbet with fold, call, or amount to raise the bet to",this);
+        twitter_interface.postReply("Please tweet #rsbet with fold, call, or amount to raise the bet to",this);
         //Scanner scanner = new Scanner(System.in);
         //String bet_answer = scanner.nextLine();
 
-        String bet_answer = twitter.getTweet("#rsbet",this);
+        String bet_answer = twitter_interface.getTweet("#rsbet",this);
 
         if (bet_answer.contains("fold")){
             current_bet = -1;
@@ -111,7 +111,7 @@ public class HumanPlayer extends PokerPlayer {
 
     public void outputHand(){
         //TODO: Twitter code/Graphics image to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
-        twitter.postReply("Your Hand is "+ hand.toString(),this);
+        twitter_interface.postReply("Your Hand is "+ hand.toString(),this);
     }
 
 

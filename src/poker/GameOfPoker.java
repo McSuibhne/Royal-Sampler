@@ -5,7 +5,6 @@ import twitter4j.TwitterException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-
 /**
  * Created by Gavin on 03/04/2017.
  */
