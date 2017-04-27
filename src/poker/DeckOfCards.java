@@ -3,7 +3,6 @@ package poker;
 import java.util.Random;
 
 public class DeckOfCards {
-
     public static final int CARDS_IN_DECK = 52;
     private boolean deck_constructed = false;
     private int next_card_position;
