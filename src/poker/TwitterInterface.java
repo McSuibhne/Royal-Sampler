@@ -55,11 +55,11 @@ public class TwitterInterface extends TwitterListener {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
         File file = new File("src/twitter_output/hand_picture.png");
         long replyId = humanPlayer.getTweetId();
-        ImageUpload image = null;
+        ImageUpload image;
 
         StatusUpdate statusReply = new StatusUpdate(answer);
         statusReply.setInReplyToStatusId(replyId);
-        statusReply.setMedia(file);
+        statusReply.setMedia(file); // attach image rather than file?
 
         try {
             twitter.updateStatus(statusReply);

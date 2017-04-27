@@ -6,37 +6,36 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
-import java.nio.Buffer;
 
 /**
  * Created by Gavin on 12/04/2017.
  */
 public class Picture extends JFrame {
 
-    PlayingCard[] hand;
+    PlayingCard[] cards;
     BufferedImage image;
 
     public Picture (PlayingCard[] handOfCards) {
         super("Card Pane");
-        hand = handOfCards;
+        cards = handOfCards;
     }
 
     public BufferedImage createPicture() {
 
-//        System.out.println(hand.toString()); // for testing and verification
+//        System.out.println(cards.toString()); // for testing and verification
         String cardsString[] = new String[5];
 
         // checks card suit and coverts to String to finish file name
         for (int i=0;i<cardsString.length;i++) {
-            System.out.println(hand[i].getCardName());
-            cardsString[i] = hand[i].getCardName() + "_of_";
-            if ((int) hand[i].getCardSuit() == (int) ('\u2665')) { // hearts
+            System.out.println(cards[i].getCardName());
+            cardsString[i] = cards[i].getCardName() + "_of_";
+            if (cards[i].getCardSuit() == "\u2665") { // hearts
                 cardsString[i] += "hearts";
-            } else if ((int) hand[i].getCardSuit() == (int) ('\u2666')) { // diamonds
+            } else if (cards[i].getCardSuit() == "\u2666") { // diamonds
                 cardsString[i] += "diamonds";
-            } else if ((int) hand[i].getCardSuit() == (int) ('\u2663')) { // clubs
+            } else if (cards[i].getCardSuit() == "\u2663") { // clubs
                 cardsString[i] += "clubs";
-            } else if ((int) hand[i].getCardSuit() == (int) ('\u2660')) { // spades
+            } else if (cards[i].getCardSuit() == "\u2660") { // spades
                 cardsString[i] += "spades";
             } else {
                 System.out.println("ERROR IN SYMBOL TO STRING");
@@ -91,7 +90,7 @@ public class Picture extends JFrame {
         add(handOfCardsPanel);
         pack();
 
-        // Outputs image of hand to folder twitter_output
+        // Outputs image of cards to folder twitter_output
         BufferedImage output = new BufferedImage(handOfCardsPanel.getWidth(), handOfCardsPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics g = output.createGraphics();
         handOfCardsPanel.print(g);

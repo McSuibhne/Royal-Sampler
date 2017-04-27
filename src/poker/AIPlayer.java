@@ -218,7 +218,7 @@ public class AIPlayer extends PokerPlayer {
     }
 
 
-    // Method calls getDiscardProbability on each card index in the hand and compares the returned values to the
+    // Method calls getDiscardProbability on each card index in the cards and compares the returned values to the
     // given discard minimum.
     // As this minimum is always <100 and cannot go below 0, a card with a discard probability of 100 will always be
     // traded while a card with a discard probability of 0 can never be traded.

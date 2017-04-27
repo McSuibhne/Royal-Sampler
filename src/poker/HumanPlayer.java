@@ -119,14 +119,9 @@ public class HumanPlayer extends PokerPlayer {
         //TODO: Twitter code/Graphics image to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
         twitter.postReply("Your Hand is "+ hand.toString(),this);
     public BufferedImage createImage() {
-        Picture picture = new Picture(hand.get());
+        Picture picture = new Picture(hand.card_hand);
         BufferedImage image = picture.createPicture();
         return image;
-    }
-
-
-    public long getTweetId() {
-        return tweetId;
     }
 
 

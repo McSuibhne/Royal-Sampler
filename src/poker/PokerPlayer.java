@@ -79,7 +79,7 @@ public abstract class PokerPlayer {
             AIPlayer players = new AIPlayer(deck);
                 player.add(players);
            }
-        System.out.println("After discard: " + player.hand.toString());
+        System.out.println("After discard: " + player.cards.toString());
 
         }
 //        for(int j= 0 ;j<DeckOfCards.CARDS_IN_DECK; j++){
@@ -87,7 +87,7 @@ public abstract class PokerPlayer {
 //
 //        }
         for(int j= 0 ;j<player.size(); j++){
-            System.out.println("Player"+j+"hand is " + player.get(j).hand.toString());
+            System.out.println("Player"+j+"cards is " + player.get(j).cards.toString());
 
         }
         for(int j= 0 ;j<player.size(); j++){
@@ -95,16 +95,16 @@ public abstract class PokerPlayer {
             if (true) {
                 boolean[] array = player.get(j).discard();
                 player.get(j).discard_cards(array);
-                System.out.println("Player" + j + "hand is " + player.get(j).hand.toString());
+                System.out.println("Player" + j + "cards is " + player.get(j).cards.toString());
             }
             else {
                 continue;}
         }
-//        System.out.println("Before discard: " +player.hand.toString());
+//        System.out.println("Before discard: " +player.cards.toString());
 //        boolean[] discards = humanPlayer.discard();
 //        player.discardCards(discards);
 //
-//        System.out.println("After discard: " + player.hand.toString());
+//        System.out.println("After discard: " + player.cards.toString());
 
     }*/
     }

@@ -109,10 +109,10 @@ public class RoundOfPoker {
         }
         catch(Exception e) {}    //Should never be reached, live_players.get(0) is either always the HumanPlayer or the game is over
 /*
-        Picture picture = new Picture(live_players.get(0).hand.get());
+        Picture picture = new Picture(live_players.get(0).cards.get());
         BufferedImage image = picture.createPicture();
 
-       twitter.postImage(live_players.get(0).hand, live_players.get(0).getName() +"\nYour Hand is "+ live_players.get(0).hand.toString(), live_players.get(0));
+       twitter.postImage(live_players.get(0).cards, live_players.get(0).getName() +"\nYour Hand is "+ live_players.get(0).cards.toString(), live_players.get(0));
     }
 */
     }
@@ -258,7 +258,7 @@ twitter.postImage(live_players.get(0).hand, tweet_message, live_players.get(0));
 
     public int findWinner() {
         int best_hand_index = 0;
-        //printed hand values are test code, will be removed
+        //printed cards values are test code, will be removed
         if(live_players.size() > 1) {
             String tweet_message = "";
             for(int i = 0; i < live_players.size(); i++) {

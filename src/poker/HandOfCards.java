@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class HandOfCards {
 
-    //Hand Score constants chosen at 1000000 marks, as no intra-hand-type
+    //Hand Score constants chosen at 1000000 marks, as no intra-cards-type
     // ranking function can increase a score by more than 10000000.
     public static final int STRAIGHT_FLUSH_VALUE = 8000000;
     public static final int FOUR_OF_A_KIND_VALUE = 7000000;
@@ -19,7 +19,7 @@ public class HandOfCards {
     public static final int CARDS_IN_HAND = 5;
     public static final int SUITS_IN_DECK = 4;
     public static final int WEIGHTING_VALUE = 14; //Weighting value set at 14 as this is the highest possible card value
-    private PlayingCard[] card_hand = new PlayingCard[CARDS_IN_HAND];
+    public PlayingCard[] card_hand = new PlayingCard[CARDS_IN_HAND];
     public DeckOfCards deck;
 
     //Deck is initialized and 5 cards are dealt.
@@ -31,7 +31,7 @@ public class HandOfCards {
         sort();
     }
 
-    //Performs a Bubble Sort to quickly sort the hand.
+    //Performs a Bubble Sort to quickly sort the cards.
     protected void sort(){
         for(int i = 0; i < CARDS_IN_HAND - 1; i++){
             for(int j = 0; j < CARDS_IN_HAND - 1; j++){
@@ -93,7 +93,7 @@ public class HandOfCards {
                 || (card_hand[4].getGameValue() == 14 && card_hand[0].getGameValue() == 2));
     }
 
-    //Tests for Three of a Kind by checking if there exists a block of 3 matching cards without a 4th match in the hand.
+    //Tests for Three of a Kind by checking if there exists a block of 3 matching cards without a 4th match in the cards.
     // Also ensures that the 2 spare cards do not match each other.
     public boolean isThreeOfAKind(){
         return (((card_hand[0].getGameValue() == card_hand[2].getGameValue() && card_hand[2].getGameValue() != card_hand[3].getGameValue()
@@ -116,7 +116,7 @@ public class HandOfCards {
                 && card_hand[0].getGameValue() != card_hand[1].getGameValue() && card_hand[2].getGameValue() != card_hand[3].getGameValue()));
     }
 
-    //Tests for One Pair by checking if there exists a match between 2 cards and no other matches in the hand.
+    //Tests for One Pair by checking if there exists a match between 2 cards and no other matches in the cards.
     public boolean isOnePair(){
         return (((card_hand[0].getGameValue() == card_hand[1].getGameValue() && !(card_hand[1].getGameValue() == card_hand[2].getGameValue()
                 || card_hand[2].getGameValue() == card_hand[3].getGameValue() || card_hand[3].getGameValue() == card_hand[4].getGameValue()))
@@ -135,7 +135,7 @@ public class HandOfCards {
                 ||  isStraight() || isThreeOfAKind() ||  isTwoPair() ||  isOnePair());
     }
 
-    //All hands in this conditional use the same formula for scoring intra-hand ties, so the only difference is
+    //All hands in this conditional use the same formula for scoring intra-cards ties, so the only difference is
     // the constant that is added. Straight flush and royal flush use the same constant as a royal flush will be
     // scored higher than any possible straight flush.
     public int getGameValue(){
@@ -185,8 +185,8 @@ public class HandOfCards {
         return total_hand_score;
     }
 
-    //Sums the values of all cards after weighting them according to rank in the hand, the same ordering that any
-    // tiebreaker will follow. Returns this sum as the hand's score.
+    //Sums the values of all cards after weighting them according to rank in the cards, the same ordering that any
+    // tiebreaker will follow. Returns this sum as the cards's score.
     private int getHighCardScore(){
         int high_card_score = 0;
 
@@ -199,7 +199,7 @@ public class HandOfCards {
 
     //getOnePairScore method first identifies the paired cards as they should receive the most significant weight regardless
     // of their values.
-    // It then weights the remaining cards in order of value before returning their sum as the hand score.
+    // It then weights the remaining cards in order of value before returning their sum as the cards score.
     private int getOnePairScore(){
         int one_pair_score = 0;
 
@@ -252,20 +252,20 @@ public class HandOfCards {
     }
 
     /*Explanation Of Discard Probability Approach:
-        This method returns the probability that discarding a given card will *not disimprove* the hand significantly.
+        This method returns the probability that discarding a given card will *not disimprove* the cards significantly.
 
         While the link given in the assignment slides is very very useful for understanding the probabilities of
-        improving a hand, this on its own is not helpful to a player.
-        For example, if a player has a 3-of-a-kind, there is an 11.5% chance of improving the hand by trading the two odd cards.
+        improving a cards, this on its own is not helpful to a player.
+        For example, if a player has a 3-of-a-kind, there is an 11.5% chance of improving the cards by trading the two odd cards.
 
         However, since the player has very little to lose by trading the two odd cards, that 11.5% is not a good indicator
         of whether he should swap them.
-        Instead, this method returns the inverse of the odds of worsening the hand by swapping a card.
+        Instead, this method returns the inverse of the odds of worsening the cards by swapping a card.
 
         eg. Say the player has a straight with 4 of the cards being of the same suit. While they could possibly end up
-        with a better hand (a flush or straight flush) by trading the odd-suited card, they also run the risk of ruining
+        with a better cards (a flush or straight flush) by trading the odd-suited card, they also run the risk of ruining
         the straight they have and being left with junk.
-        As ~80% of the possible cards would make this hand worse, the method would return ~20% discard probability in this case
+        As ~80% of the possible cards would make this cards worse, the method would return ~20% discard probability in this case
 
         All formulae are explained in comments, as well as the private helper methods it makes use of.
     */
@@ -290,8 +290,8 @@ public class HandOfCards {
                 probabilities[2][cardPosition] += getTwoPairProbability(cardPosition);
             }
 
-            //If the card is not part of the triple and is the highest ranked card in the hand, there's a slight chance of worsening t
-            // the hand if the returned cards do not match any others and are both lower in value than the discarded card.
+            //If the card is not part of the triple and is the highest ranked card in the cards, there's a slight chance of worsening t
+            // the cards if the returned cards do not match any others and are both lower in value than the discarded card.
             // However, this should usually return a high discard probability.
             if(isThreeOfAKind()) {
                 if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()) { //The card in the middle position will always be part of the triple
@@ -344,8 +344,8 @@ public class HandOfCards {
         return probabilities;
     }
 
-    //In a high card hand, the method checks if the hand resembles a broken flush or straight, and trades the odd card
-    // if so. Otherwise it assigns high discard probabilities to the worst 3 cards in the hand, slightly weighting the
+    //In a high card cards, the method checks if the cards resembles a broken flush or straight, and trades the odd card
+    // if so. Otherwise it assigns high discard probabilities to the worst 3 cards in the cards, slightly weighting the
     // scores by how strong the cards' values are.
     private int getHighCardProbability(int cardPosition){
         int probability = 0;
@@ -392,7 +392,7 @@ public class HandOfCards {
         return probability;
     }
 
-    //As the chances of improving one pair hand to straight or flush are low, this will return a high discard
+    //As the chances of improving one pair cards to straight or flush are low, this will return a high discard
     //probability for the kicker cards only, which will be slightly weighted by how strong the cards are.
     private int[] getOnePairProbability(int cardPosition){
         int[] pair_probabilities = new int[3];
@@ -443,10 +443,10 @@ public class HandOfCards {
     }
 
     //Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
-    // in the hand, it replaces the card at the position currently being evaluated and sorts the hand before checking to
+    // in the cards, it replaces the card at the position currently being evaluated and sorts the cards before checking to
     // see if this creates a straight.
     // If so, it increases the returned number of possible straights by 1.
-    // After each iteration the hand is changed back to its' original state so the next change will occur in the correct place.
+    // After each iteration the cards is changed back to its' original state so the next change will occur in the correct place.
     // Originally this method returned a boolean but this made extra code necessary to calculate how likely it was that
     // a straight could be made. Now it performs both tasks by simply returning the number of possible straights that can be
     // made by trading the card in question, and a return value of 0 is interpreted as equivalent to false.
@@ -477,7 +477,7 @@ public class HandOfCards {
     }
 
     //Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
-    // in the hand, it replaces the card at the position currently being evaluated and checks to see if this creates a
+    // in the cards, it replaces the card at the position currently being evaluated and checks to see if this creates a
     // flush.
     // If so, it increases the returned number of possible flushes by 1.
     // Originally this method returned a boolean but this made extra code necessary to calculate how likely it was that
@@ -526,7 +526,7 @@ public class HandOfCards {
         card_hand[card_position] = deck.dealNext();
     }
 
-    //Simple toString method to make hand more readable
+    //Simple toString method to make cards more readable
     public String toString(){
         String hand_string = "[";
         for(int i = 0; i < card_hand.length; i++){
@@ -540,12 +540,12 @@ public class HandOfCards {
         }
         return hand_string;
     }
-
+/*
     // Added by Gavin for Picture functionality
     public PlayingCard[] get() {
         return card_hand;
     }
-
+*/
     //***FOR TESTING ONLY***
     //No setter is needed for final program, method just allows for card values to be set to test
     // unlikely hands such as Royal Flush etc. Will be removed later to ensure encapsulation.
@@ -557,13 +557,13 @@ public class HandOfCards {
 
     }
 
-    //Main initializes a new deck and hand, generating a random hand of cards as per the class's normal function.
+    //Main initializes a new deck and cards, generating a random cards of cards as per the class's normal function.
     // It then creates some specific cards and assembles them into known poker hands, before placing these combinations
     // in a list of tests.
-    // Main then iterates through this test list, outputting the values of all card hand types, values, and discard
+    // Main then iterates through this test list, outputting the values of all card cards types, values, and discard
     // probability methods to show that each is working as specified. Once this code is not needed, the test setter
     // can be removed.
-    // Test list implemented using array lists to allow for growing list of tests as well as both title and hand members.
+    // Test list implemented using array lists to allow for growing list of tests as well as both title and cards members.
     public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
         HandOfCards hand = new HandOfCards(deck);
@@ -636,7 +636,7 @@ public class HandOfCards {
         test_list.add(new ArrayList<>(Arrays.asList("HighHand (No Busted Flush or Straight):")));
         test_list.add(new ArrayList<>(Arrays.asList(test_JH, test_8C, test_KH, test_10S, test_2H)));   //High Hand
 
-        //Test loop shows all hand classification and hand scoring code works properly and has no overlap between hands,
+        //Test loop shows all cards classification and cards scoring code works properly and has no overlap between hands,
         // while scoring similar hands according to brief.
         // It then outputs the discard probabilities for each card.
         for(int i=0; i<test_list.size()+1; i++) {
