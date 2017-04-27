@@ -1,5 +1,6 @@
 package poker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -26,31 +27,30 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public boolean[] discard() {
-        twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
-        twitter.getTweetfromUser("#rsdiscard", this);
+       twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
         boolean[] discard_cards = {false, false, false, false, false};
         String status = twitter.getTweetfromUser("#rsdiscard", this);
         char[] status_text = status.toCharArray();
         int discards_entered = 0;
-        boolean uses_zero = false;
+
 
         for(int i = 0; i <status_text.length && discards_entered <= 3; i++) {
-            String tweet_character = Character.toString(status_text[i]);
-            if(tweet_character.matches("\\d{1}")) {
-                int discard_index = Integer.parseInt(tweet_character);
-                if(discard_index >= 0 && discard_index <= 5) {
-                    if(discard_index == 0){
-                        uses_zero = true;
-                    }
-                    if(!uses_zero){
-                        discard_index--;
-                    }
+            int discard_index = Character.getNumericValue(status_text[i]);
+
+            if (status.contains("0")) {
+                if (discard_index >= 0 && discard_index < 5) {
                     discard_cards[discard_index] = true;
                     discards_entered++;
                 }
+                } else {
+                if (discard_index > 0 && discard_index <= 5) {
+                    discard_index--;
+                    discard_cards[discard_index] = true;
+                    discards_entered++;
+
+                }
             }
         }
-
         //Console testing below if wanted, remove before submission
         /*Scanner scanner = new Scanner(System.in);
         boolean[] discard_cards = {false, false, false, false, false};
@@ -113,7 +113,19 @@ public class HumanPlayer extends PokerPlayer {
         twitter.postImagetoUser(hand.card_hand,getName()+"  "+ tweet_message , this);
 
     }
-
+    public static void main(String[] args) {
+        TwitterInterface t = null;
+        try {
+            t = new TwitterInterface();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HumanPlayer player = new HumanPlayer(t, "O", 676);
+        boolean[] b = player.discard();
+        for (int i = 0; i < b.length; i++) {
+            System.out.println(b[i]);
+        }
+    }
 }
 
 
