@@ -99,9 +99,11 @@ public class TwitterInterface  {
     public void postImage(PlayingCard[] currentHand, String answer, PokerPlayer pokerPlayer) {
 
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
+        Picture picture = new Picture(currentHand);
+        picture.createPicture();
+
         File file = new File("src/twitter_output/hand_picture.png");
         long replyId = humanPlayer.getTweetId();
-        ImageUpload image;
 
         StatusUpdate statusReply = new StatusUpdate(answer);
         statusReply.setInReplyToStatusId(replyId);
