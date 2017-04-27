@@ -35,7 +35,7 @@ public class HumanPlayer extends PokerPlayer {
         int discards_entered = 0;
         boolean uses_zero = false;
 
-        for(int i = 0; i <status_text.length && discards_entered < 3; i++) {
+        for(int i = 0; i <status_text.length && discards_entered <= 3; i++) {
             String tweet_character = Character.toString(status_text[i]);
             if(tweet_character.matches("\\d{1}")) {
                 int discard_index = Integer.parseInt(tweet_character);
@@ -115,24 +115,6 @@ public class HumanPlayer extends PokerPlayer {
     }
 
 
-    public static void main(String[] args) {
-//        DeckOfCards deck = new DeckOfCards();
-//
-//        TwitterInterface twit = null;
-//        try {
-//            twit = new TwitterInterface();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        HumanPlayer player = new HumanPlayer(deck,twit);
-//        twit.postReply("This is your Hand"+player.hand.toString(),0);
-//        boolean[] discardlist = player.discardTList();
-//        player.discard_cards(discardlist);
-//        //System.out.println("Discards: " + );
-//        twit.postReply("Hand after discard" +player.hand.toString(),0);
-//        System.out.println("After discard: " + player.hand.toString());
-    }
 }
 
 
