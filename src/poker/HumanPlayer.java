@@ -41,7 +41,7 @@ public class HumanPlayer extends PokerPlayer {
         int discards_entered = 0;
         boolean uses_zero = false;
 
-        for(int i = 0; i <status_text.length && discards_entered < 3; i++) {
+        for(int i = 0; i <status_text.length && discards_entered <= 3; i++) {
             String tweet_character = Character.toString(status_text[i]);
             if(tweet_character.matches("\\d{1}")) {
                 int discard_index = Integer.parseInt(tweet_character);
