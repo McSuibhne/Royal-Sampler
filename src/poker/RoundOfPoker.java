@@ -3,17 +3,20 @@ package poker;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ *
+ */
 public class RoundOfPoker {
     public static final int ANTE = 1;
     public int pot;
-    TwitterInterface twitter;
-    ArrayList<PokerPlayer> live_players = new ArrayList<>();
+    TwitterInterface twitter_interface;
+    ArrayList<PokerPlayer> live_players;
     DeckOfCards deck;
 
-    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards card_deck, TwitterInterface twitterInterface) {
+    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards card_deck, TwitterInterface t_interface) {
         pot = 0;
         deck = card_deck;
-        twitter = twitterInterface;
+        twitter_interface = t_interface;
         live_players = (ArrayList<PokerPlayer>) player_list.clone();
     }
 
@@ -21,7 +24,7 @@ public class RoundOfPoker {
         int opener_index = -1;
         boolean player_busted = false;
         while(opener_index == -1) {
-            twitter.postReply("New Round:\n"+ countChips(), live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter_interface.postReply("New Round:\n"+ countChips(), live_players.get(GameOfPoker.HUMAN_INDEX));
             player_busted = payAnte();
             if(player_busted) {
                 break;
@@ -29,7 +32,7 @@ public class RoundOfPoker {
             dealCards();
             opener_index = findOpener();
             if(opener_index == -1) {
-                twitter.postReply("No one can open the betting, restarting round", live_players.get(GameOfPoker.HUMAN_INDEX));
+                twitter_interface.postReply("No one can open the betting, restarting round", live_players.get(GameOfPoker.HUMAN_INDEX));
                 deck.reset();
             }
         }
@@ -43,7 +46,7 @@ public class RoundOfPoker {
                 }
             }
             winner_index = findWinner();
-            twitter.postReply(live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
+            twitter_interface.postReply(live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
             live_players.get(winner_index).chips += pot;
         }
     }
@@ -91,7 +94,7 @@ public class RoundOfPoker {
         }
 
         if(!tweet_message.equals("")){
-            twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter_interface.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
         }
 
         return isHumanBusted;
@@ -150,7 +153,7 @@ public class RoundOfPoker {
             PokerPlayer current_player = live_players.get(i % live_players.size());
 
             if((i % live_players.size() == GameOfPoker.HUMAN_INDEX && !tweet_message.equals("")) || tweet_message.length() > 100){
-                twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+                twitter_interface.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
                 tweet_message = "";
             }
 
@@ -227,7 +230,7 @@ public class RoundOfPoker {
                 current_player.previous_bet = current_player.current_bet;
             }
         }
-        twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+        twitter_interface.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
     }
 
     public void discard() {
@@ -246,7 +249,7 @@ public class RoundOfPoker {
         for(int i = GameOfPoker.HUMAN_INDEX + 1; i < live_players.size(); i++){
             tweet_message += live_players.get(i).getName() +" discards "+ live_players.get(i).discards +" cards\n";
         }
-        twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+        twitter_interface.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
     }
 
     public int findWinner() {
@@ -257,7 +260,7 @@ public class RoundOfPoker {
             for(int i = 0; i < live_players.size(); i++) {
                 tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).hand.toString() +" "+ live_players.get(i).hand.getGameValue() +"\n";
             }
-            twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter_interface.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
         }
 
         for(int i = best_hand_index + 1; i < live_players.size(); i++){

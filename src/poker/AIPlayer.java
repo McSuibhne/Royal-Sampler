@@ -1,11 +1,13 @@
 package poker;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ *
+ */
 public class AIPlayer extends PokerPlayer {
     public static final String NAMES_FILE = "src/poker/AINames.txt";
     public static final String TELLS_FILE = "src/poker/AITells.txt";

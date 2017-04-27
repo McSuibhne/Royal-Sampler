@@ -1,15 +1,17 @@
 package poker;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public abstract class PokerPlayer {
-    public static final int STARTING_CHIPS = 10;
-    public HandOfCards hand;
-    protected String name;
-    public int chips;
-    public int current_bet;
-    public int previous_bet;
+    static final int STARTING_CHIPS = 10;
+    HandOfCards hand;
+    String name;
+    int chips;
+    int current_bet;
+    int previous_bet;
     int discards;
     boolean bluff = false;
     public boolean all_in = false;
