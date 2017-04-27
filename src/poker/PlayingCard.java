@@ -19,7 +19,7 @@ public class PlayingCard {
         game_value = value;
     }
 
-    /**Public  accessor for the Card Name*/
+    /**Public accessor for the Card Name*/
     String getCardName() {
         return card_name;
     }

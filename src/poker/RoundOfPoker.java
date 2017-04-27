@@ -10,7 +10,6 @@ public class RoundOfPoker {
     ArrayList<PokerPlayer> live_players = new ArrayList<>();
     DeckOfCards deck;
 
-
     public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards card_deck, TwitterInterface twitterInterface) {
         pot = 0;
         deck = card_deck;

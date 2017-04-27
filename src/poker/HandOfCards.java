@@ -3,6 +3,7 @@ package poker;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public class HandOfCards {
 
     //Hand Score constants chosen at 1000000 marks, as no intra-hand-type
