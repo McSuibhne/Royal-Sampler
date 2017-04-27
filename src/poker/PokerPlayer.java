@@ -1,21 +1,25 @@
 package poker;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public abstract class PokerPlayer {
     public static final int STARTING_CHIPS = 10;
-    //private DeckOfCards deck;
     public HandOfCards hand;
     protected String name;
     public int chips;
     public int current_bet;
+    public int previous_bet;
+    int discards;
+    boolean bluff = false;
+    public boolean all_in = false;
 
     //Hand is initialized.
-    public PokerPlayer(String player_name, DeckOfCards card_deck) {
+    public PokerPlayer(String player_name) {
         name=player_name;
-        //deck = card_deck;
         chips = STARTING_CHIPS;
-        current_bet = 0;
+        current_bet = -1;
+        previous_bet = 0;
     }
 
     public String getName() {
@@ -23,39 +27,38 @@ public abstract class PokerPlayer {
     }
 
     public synchronized void deal(DeckOfCards deck){
-
+        all_in = false;
         hand = new HandOfCards(deck);
     }
 
 
-    public void discard_cards(boolean[] discard_cards) {
-        int discards = 0;
+    public abstract void getBet(int current_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players);
+
+
+    public abstract boolean[] discard();
+
+
+    public void discard_cards() {
+        discards = 0;
+        boolean[] discard_cards = discard();
         for (int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
             if (discard_cards[i] && discards < 3) {
                 hand.discardCard(i);
                 discards++;
             }
         }
-        TwitterInterface twit = null;
-        try {
-            twit = new TwitterInterface();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        System.out.println("Number of cards discarded: " + discards);
-
         hand.sort();
     }
+
+
+
+
 
     private String setPlayer_name(String name) {
         return this.name;
     }
-    //TODO: Implement getBet in both AIPlayer (with AI) and HumanPlayer (ask Twitter). getBet should change current_bet
-    //TODO:  -1 to indicate a fold and otherwise place their bet amount (call or raise).
-    //TODO:    In summary, only current_bet options are (a)[-1]...fold  (b)[highest_bet]...call/see  (c)[>highest_bet]...raise
-    public abstract void getBet(int current_bet);
+
+
 
 
     //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before
@@ -67,7 +70,6 @@ public abstract class PokerPlayer {
         PokerPlayer player = new PokerPlayer("test_player", deck);
        /* DeckOfCards deck = new DeckOfCards();
         ArrayList<PokerPlayer> player = new ArrayList<>();
-
         for (int i=0 ;i<5; i ++ ){
             if (i==0){
                 HumanPlayer players = new HumanPlayer(deck);
@@ -77,7 +79,6 @@ public abstract class PokerPlayer {
             AIPlayer players = new AIPlayer(deck);
                 player.add(players);
            }
-
         System.out.println("After discard: " + player.hand.toString());
 
         }
@@ -99,9 +100,6 @@ public abstract class PokerPlayer {
             else {
                 continue;}
         }
-
-
-
 //        System.out.println("Before discard: " +player.hand.toString());
 //        boolean[] discards = humanPlayer.discard();
 //        player.discardCards(discards);
@@ -111,5 +109,4 @@ public abstract class PokerPlayer {
     }*/
     }
 
-    public abstract void discards();
 }

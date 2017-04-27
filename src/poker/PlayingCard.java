@@ -1,57 +1,54 @@
 package poker;
 
-
-//
 public class PlayingCard {
-    static public final char HEARTS = (char)'\u2665';
-    static public final char DIAMONDS = (char)'\u2666';
-    static public final char CLUBS = (char)'\u2663';
-    static public final char SPADES = (char)'\u2660';
+    static final String HEARTS = "\u2665";
+    static final String DIAMONDS = "\u2666";
+    static final String CLUBS = "\u2663";
+    static final String SPADES = "\u2660";
 
     private String card_name;
-    private char card_suit;
+    private String card_suit;
     private int face_value;
     private int game_value;
 
 
-    public PlayingCard(String name, char suit, int face, int value) {
+    PlayingCard(String name, String suit, int face, int value) {
         card_name = name;
         card_suit = suit;
         face_value = face;
         game_value = value;
-      //  card_pic= pic;
     }
 
-    //Public accessor for the Card Name
-    public String getCardName() {
+    /**Public accessor for the Card Name*/
+    String getCardName() {
         return card_name;
     }
 
-    //Public accessor for the Card Suit
-    public char getCardSuit() {
+    /**Public accessor for the Card Suit*/
+    String getCardSuit() {
         return card_suit;
     }
 
-    //Public accessor for the Face Value
+    /**Public accessor for the Face Value*/
     public int getFaceValue() {
         return face_value;
     }
 
-    //Public accessor for the Game Value
-    public int getGameValue() {
+    /**Public accessor for the Game Value*/
+    int getGameValue() {
         return game_value;
     }
 
+    /**PlayingCard toString (Card face + suit unicode)*/
     public String toString() {
         return card_name + card_suit;
     }
 
-    //Test code builds and prints contents of a full deck to show the class can represent any member card in a 52 card deck.
+    /**Test code builds and prints contents of a full deck to show the class can represent any member card in a 52 card deck.*/
     public static void main(String[] args) {
         int current_value;
-        String unicode="\uD83C";
 
-        char[] suit_list = {PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS, PlayingCard.SPADES};
+        String[] suit_list = {PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS, PlayingCard.SPADES};
         String[] name_list = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
         PlayingCard[] card_list = new PlayingCard[suit_list.length*name_list.length];

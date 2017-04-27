@@ -269,74 +269,79 @@ public class HandOfCards {
 
         All formulae are explained in comments, as well as the private helper methods it makes use of.
     */
-    public int getDiscardProbability(int cardPosition){
-        int probability = 0;
+    public int[][] getDiscardProbability(){
+        int[][] probabilities = new int[][]{{0, 0, 0, 0, 0},{0, 0, 0, 0, 0},{0, 0, 0, 0, 0}};
+        for(int cardPosition=0; cardPosition<CARDS_IN_HAND; cardPosition++) {
+            //Calls helper method getHighCardProbability to return discard probability for the given card.
+            if(isHighHand()) {
+                probabilities[2][cardPosition] += getHighCardProbability(cardPosition);
+            }
 
-        //Calls helper method getHighCardProbability to return discard probability for the given card.
-        if(isHighHand()){
-            probability += getHighCardProbability(cardPosition);
-        }
+            //Calls helper method getOnePairProbability to return discard probability for the given card.
+            if(isOnePair()) {
+                int[] pair_discards = getOnePairProbability(cardPosition);
+                probabilities[0][cardPosition] += pair_discards[0];
+                probabilities[1][cardPosition] += pair_discards[1];
+                probabilities[2][cardPosition] += pair_discards[2];
+            }
 
-        //Calls helper method getOnePairProbability to return discard probability for the given card.
-        if(isOnePair()){
-            probability += getOnePairProbability(cardPosition);
-        }
+            //Calls helper method getTwoPairProbability to return discard probability for the given card.
+            if(isTwoPair()) {
+                probabilities[2][cardPosition] += getTwoPairProbability(cardPosition);
+            }
 
-        //Calls helper method getTwoPairProbability to return discard probability for the given card.
-        if(isTwoPair()){
-            probability += getTwoPairProbability(cardPosition);
-        }
-
-        //If the card is not part of the triple and is the highest ranked card in the hand, there's a slight chance of worsening t
-        // he hand if the returned cards do not match any others and are both lower in value than the discarded card.
-        // However, this should usually return a high discard probability.
-        if(isThreeOfAKind()){
-            if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()){ //The card in the middle position will always be part of the triple
-                if(cardPosition == CARDS_IN_HAND - 1){
-                    probability += (int)((1 - ((card_hand[cardPosition].getGameValue() - 1)/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
+            //If the card is not part of the triple and is the highest ranked card in the hand, there's a slight chance of worsening t
+            // the hand if the returned cards do not match any others and are both lower in value than the discarded card.
+            // However, this should usually return a high discard probability.
+            if(isThreeOfAKind()) {
+                if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()) { //The card in the middle position will always be part of the triple
+                    if(cardPosition == CARDS_IN_HAND - 1) {
+                        probabilities[2][cardPosition] += (int) ((1 - ((card_hand[cardPosition].getGameValue() - 1)
+                                / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
+                    }
+                    else {
+                        probabilities[2][cardPosition] += 100;     //Should definitely trade at least one card
+                    }
                 }
-                else{
-                    probability += 100;     //Should definitely trade at least one card
+            }
+            //There's a small chance of improving a straight to a flush if it is currently a broken flush. However, there
+            // are many cards that could ruin the straight so this will usually return a low discard probability.
+            if(isStraight() && !isFlush()) {
+                int potential_flushes = isBustedFlush(cardPosition);
+                if(potential_flushes > 0) {
+                    probabilities[2][cardPosition] += (int) (((potential_flushes) / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND)) * 100);
                 }
             }
-        }
-        //There's a small chance of improving a straight to a flush if it is currently a broken flush. However, there
-        // are many cards that could ruin the straight so this will usually return a low discard probability.
-        if(isStraight() && !isFlush()){
-            int potential_flushes = isBustedFlush(cardPosition);
-            if(potential_flushes > 0){
-                probability += (int)(((potential_flushes)/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))*100);
+
+            //There's a VERY small chance of improving a flush to a straight flush if it is currently a broken straight. However, there
+            // are many cards that could ruin the flush so this will usually return a low discard probability.
+            if(isFlush() && !isStraight()) {
+                int potential_straights = isBustedStraight(cardPosition);
+                if(potential_straights > 0) {
+                    probabilities[2][cardPosition] += (int) (((potential_straights / SUITS_IN_DECK)
+                            / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND)) * 100);
+                }
             }
-        }
 
-        //There's a VERY small chance of improving a flush to a straight flush if it is currently a broken straight. However, there
-        // are many cards that could ruin the flush so this will usually return a low discard probability.
-        if(isFlush() && !isStraight()){
-            int potential_straights = isBustedStraight(cardPosition);
-            if(potential_straights > 0){
-                probability += (int)(((potential_straights/SUITS_IN_DECK)/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))*100);
+            //There's a small chance of improving a full house to a four of a kind. However, there are many cards
+            // that could ruin the full house so this will usually return an extremely low discard probability.
+            if(isFullHouse()) {
+                if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()) {
+                    probabilities[2][cardPosition] += (int) (1 / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND) * 100);
+                }
             }
-        }
 
-        //There's a small chance of improving a full house to a four of a kind. However, there are many cards
-        // that could ruin the full house so this will usually return an extremely low discard probability.
-        if(isFullHouse()){
-            if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()){
-                probability += (int) (1/(double)(DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND)*100);
+            //No two four of a kinds are equal so the spare card is completely useless. Because of this, it should always
+            // be traded as not trading any cards can often scare away other players from betting.
+            if(isFourOfAKind()) {
+                if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()) {
+                    probabilities[2][cardPosition] += 100;
+                }
             }
+
+            //There is no way to improve a Royal Flush, all discard probabilities will be 0.
         }
-
-        //No two four of a kinds are equal so the spare card is completely useless. Because of this, it should always
-        // be traded as not trading any cards can often scare away other players from betting.
-        if(isFourOfAKind()){
-            if(card_hand[cardPosition].getGameValue() != card_hand[2].getGameValue()){
-                probability += 100;
-            }
-        }
-
-        //There is no way to improve a Royal Flush, all discard probabilities will be 0.
-
-        return probability;
+        return probabilities;
     }
 
     //In a high card hand, the method checks if the hand resembles a broken flush or straight, and trades the odd card
@@ -389,18 +394,34 @@ public class HandOfCards {
 
     //As the chances of improving one pair hand to straight or flush are low, this will return a high discard
     //probability for the kicker cards only, which will be slightly weighted by how strong the cards are.
-    private int getOnePairProbability(int cardPosition){
-        int probability = 0;
+    private int[] getOnePairProbability(int cardPosition){
+        int[] pair_probabilities = new int[3];
         boolean is_in_pair = false;
+        int potential_flushes = isBustedFlush(cardPosition);
+        int potential_straights = isBustedStraight(cardPosition);
         for(int i = 0; i < CARDS_IN_HAND; i++) {
-            if(card_hand[cardPosition].getGameValue() == card_hand[i].getGameValue() && i != cardPosition) {
+            if(card_hand[cardPosition].getGameValue() == card_hand[i].getGameValue() && cardPosition != i) {
                 is_in_pair = true;
             }
         }
-        if(!is_in_pair) {
-            probability += (int) ((1 - ((card_hand[cardPosition].getGameValue() - 1) / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
+        if(potential_flushes > 0) {
+            if(is_in_pair && !card_hand[cardPosition].getCardSuit().equals(card_hand[(cardPosition+2)%CARDS_IN_HAND].getCardSuit())){
+                pair_probabilities[0] += (int) ((1 - (((DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND) - ((((CARDS_IN_HAND - 1)*(SUITS_IN_DECK - 1)) - 1)
+                        + potential_flushes)) /(double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND)))*100);
+            }
         }
-        return probability;
+        else if(potential_straights > 0){
+            if(is_in_pair && cardPosition%2 == 0){      //Will only swap one of the two matching cards
+                pair_probabilities[1] += (int) ((1 - (((DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND) - ((((CARDS_IN_HAND - 1)*(SUITS_IN_DECK - 1)) - 1)
+                        + potential_straights)) /(double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND)))*100);
+            }
+        }
+        else {
+            if(!is_in_pair) {
+                pair_probabilities[2] += (int) ((1 - ((card_hand[cardPosition].getGameValue() - 1) / (double) (DeckOfCards.CARDS_IN_DECK - CARDS_IN_HAND))) * 100);
+            }
+        }
+        return pair_probabilities;
     }
 
     //A two pair cannot be easily improved by discarding cards in either of the pairs. This will return a high discard
@@ -484,6 +505,16 @@ public class HandOfCards {
         }
         card_hand[card_position] = original_card;
         return potential_flushes;
+    }
+
+    public boolean isDrawingHand(){
+        boolean drawing_hand = false;
+        for(int i=0; i<CARDS_IN_HAND; i++){
+            if(isBustedStraight(i) > 0 || isBustedFlush(i) > 0){
+                drawing_hand = true;
+            }
+        }
+        return drawing_hand;
     }
 
     //Small method that should be called from the PokerPlayer class, necessitating the protected access modifier.
@@ -629,7 +660,7 @@ public class HandOfCards {
                 System.out.println("isHighHand: " + hand.isHighHand());
 
                 for(int j=0; j<CARDS_IN_HAND; j++){
-                    System.out.println("Card " + j + ": " + hand.getDiscardProbability(j));
+                    System.out.println("Card " + j + ": " + hand.getDiscardProbability());
                 }
             }
         }
