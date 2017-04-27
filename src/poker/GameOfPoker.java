@@ -4,7 +4,6 @@ import twitter4j.TwitterException;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Created by Gavin on 03/04/2017.
@@ -56,12 +55,12 @@ public class GameOfPoker extends Thread{
         String win_message = "";
 
 
-        twitter.postReply(humanPlayer.name +" You have tweeted the RoyalSampler hashtag to play Poker\nWelcome to 5 card draw Poker!", player_list.get(HUMAN_INDEX));
+        twitter.postMessagetoUser(humanPlayer.name +" You have tweeted the RoyalSampler hashtag to play Poker\nWelcome to 5 card draw Poker!", player_list.get(HUMAN_INDEX));
         String opponent_names = "";
         for(int i=HUMAN_INDEX + 1; i<player_list.size(); i++){
             opponent_names += player_list.get(i).getName() +"\n";
         }
-        twitter.postReply("Your opponents are:\n"+ opponent_names, player_list.get(HUMAN_INDEX));
+        twitter.postMessagetoUser("Your opponents are:\n"+ opponent_names, player_list.get(HUMAN_INDEX));
 
         while(!game_over){
             deck.reset();
@@ -86,7 +85,7 @@ public class GameOfPoker extends Thread{
             }
 
             if(!tweet_message.equals("")){
-                twitter.postReply(tweet_message, humanPlayer);
+                twitter.postMessagetoUser(tweet_message, humanPlayer);
             }
 
             if(player_list.size()==1){
@@ -94,11 +93,11 @@ public class GameOfPoker extends Thread{
                 win_message = "You have won. Congratulations!\nThank you for playing";
             }
         }
-        twitter.postReply(win_message, humanPlayer);
+        twitter.postMessagetoUser(win_message, humanPlayer);
     }
 
     public void quitMessage(){
-        twitter.postReply("You have tweeted the hashtag to end the game\nThank You for playing!", player_list.get(GameOfPoker.HUMAN_INDEX));
+        twitter.postMessagetoUser("You have tweeted the hashtag to end the game\nThank You for playing!", player_list.get(GameOfPoker.HUMAN_INDEX));
     }
 
     // main method initialising twitter listener and waiting for game start request

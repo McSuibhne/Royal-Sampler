@@ -1,11 +1,9 @@
 package poker;
 
 import twitter4j.*;
-import twitter4j.media.ImageUpload;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,30 +17,28 @@ import java.util.concurrent.TimeUnit;
  * Created by Orla on 20/03/2017.
  */
 public class TwitterInterface  {
-
-    TwitterFactory tf;
+    private final Object lock = new Object();
+    TwitterFactory twitterFactory;
     Twitter twitter;
     List<Status> tweets;
     public static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
     public static final int NAMES_FILE_LENGTH = 4;
-
     public String twittername;
     public long statusId;
-
-    Configuration config = setConfiguration();
-
+    Configuration config;
     TwitterStream stream;
     GameOfPoker game;
     ArrayList<GameOfPoker> gamelist = new ArrayList();
-    TwitterStreamFactory factory;
 
     public TwitterInterface() throws IOException {
-        tf = new TwitterFactory(config);
-        twitter = tf.getInstance();
+
+        config=setConfiguration();
+        twitterFactory = new TwitterFactory(config);
+        twitter = twitterFactory.getInstance();
     }
     public Configuration setConfiguration() {
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-        String ai_name = null;
+        Configuration configuration;
         try {
 
             BufferedReader reader = new BufferedReader(new FileReader(NAMES_FILE));
@@ -62,14 +58,12 @@ public class TwitterInterface  {
         } catch(IOException e) {
             e.printStackTrace();
         }
-
-        config = configurationBuilder.build();
-
-        return config;
+        configuration = configurationBuilder.build();
+        return configuration;
     }
 
 
-    public void postReply(String answer, PokerPlayer pokerPlayer) {
+    public void postMessagetoUser(String answer, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
 
         if(answer.length() > 144){
@@ -96,7 +90,7 @@ public class TwitterInterface  {
         }
     }
 
-    public void postImage(PlayingCard[] currentHand, String answer, PokerPlayer pokerPlayer) {
+    public void postImagetoUser(PlayingCard[] currentHand, String answer, PokerPlayer pokerPlayer) {
 
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
         Picture picture = new Picture(currentHand);
@@ -126,22 +120,18 @@ public class TwitterInterface  {
     }
 
 
-    //Should be removed before submission. Rename to postReply to easily switch to console output instead of twitter.
-    public void testpostreply(String answer, PokerPlayer pokerPlayer) {
+    //Should be removed before submission. Rename to postMessagetoUser to easily switch to console output instead of twitter.
+    public void testpostMessagetoUser(String answer, PokerPlayer pokerPlayer) {
         System.out.println(answer);
     }
 
 
-    public String getTweet(String word, PokerPlayer pokerPlayer) {
+    public String getTweetfromUser(String word, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
-
-        Status s = null;
-
-
+        String message;
+        Status status = null;
         try {
-
             Query query = new Query(word);
-
             System.out.println("query string: " + query.getQuery());
 
             try {
@@ -150,13 +140,10 @@ public class TwitterInterface  {
             } catch (Throwable e) {
                 // enlarge buffer error?
                 query.setCount(30);
-
             }
             QueryResult result = null;
-
             try {
                 result = twitter.search(query);
-
             } catch (TwitterException e1) {
                 e1.printStackTrace();
             }
@@ -175,8 +162,8 @@ public class TwitterInterface  {
                     for (int i = 0; i < tweets.size(); i++) {
                         String name = "@" + result.getTweets().get(i).getUser().getScreenName();
                         if (name.equals(humanPlayer.getName())) {
-                            System.out.println("result: " + result.getTweets().get(i).getText());
-                            s = result.getTweets().get(i);
+                           // System.out.println("result: " + result.getTweets().get(i).getText()); testing
+                            status = result.getTweets().get(i);
                             break;
                         }
                     }
@@ -186,20 +173,22 @@ public class TwitterInterface  {
                 j++;
             }
         } catch (Exception e) {
+            if(word.equals("#rsbet")){
+                message="call";
+
+            }else{
+                message= "discard";
+            }
             e.printStackTrace();
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
         }
-        String h;
 
-        // humanPlayer.setTweetId(s.getId());
-        h = s.getText();
+        message = status.getText();
 
 
-        return h;
+        return message;
     }
-    private final Object lock = new Object();
-
 
     public GameOfPoker startGame(String[] word, TwitterInterface twitterInterface) throws TwitterException {
 
@@ -207,7 +196,6 @@ public class TwitterInterface  {
         StatusListener listener = new StatusListener() {
             public void onStatus(Status status) {
                 String t = "@" + status.getUser().getScreenName();
-                long id = status.getId();
                 twittername = "@" + status.getUser().getScreenName();
                 statusId = status.getId();
 
@@ -255,12 +243,12 @@ public class TwitterInterface  {
             }
         };
 
-        FilterQuery fq = new FilterQuery();
+        FilterQuery filterQuery = new FilterQuery();
 
-        fq.track(word);
+        filterQuery.track(word);
 
         stream.addListener(listener);
-        stream.filter(fq);
+        stream.filter(filterQuery);
 
         try {
             synchronized(lock) {
@@ -349,7 +337,7 @@ public class TwitterInterface  {
     }
     public static void main(String[] args) throws TwitterException, IOException {
         TwitterInterface twitterInterface = new TwitterInterface();
-        String[] keywords = {"#rsdealmeinx", "#rsdealmeout"};
+        String[] keywords = {"#rsdealmein", "#rsdealmeout"};
         twitterInterface.startGame(keywords, twitterInterface);
 
 

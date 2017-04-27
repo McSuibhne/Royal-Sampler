@@ -2,3 +2,10 @@ MBpeOT5RiDelmfauTPSiYNRvD
 AAsDGnnx618BljG9zzpI1raANehBHnIzw0Z1PYl64J6bMHqc7C
 843979502158004225-9FjLlo7kDHhWeNUVFfQC0t3Rgic3FUR
 kp2EXtlo10RXtUCLgxg8dPfvozNalzpsyCVUm5UDR2Nf4
+
+
+It is important to  fill in the top 4 lines  exactly as  the shown order below
+ Line 1 :ConsumerKey
+ Line 2 :Consumer Secret Key
+ Line 3 :Access Token
+ Line 4 :Access Secret Token

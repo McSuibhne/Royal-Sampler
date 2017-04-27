@@ -21,7 +21,7 @@ public class RoundOfPoker {
         int opener_index = -1;
         boolean player_busted = false;
         while(opener_index == -1) {
-            twitter.postReply("New Round:\n"+ countChips(), live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter.postMessagetoUser("New Round:\n"+ countChips(), live_players.get(GameOfPoker.HUMAN_INDEX));
             player_busted = payAnte();
             if(player_busted) {
                 break;
@@ -29,7 +29,7 @@ public class RoundOfPoker {
             dealCards();
             opener_index = findOpener();
             if(opener_index == -1) {
-                twitter.postReply("No one can open the betting, restarting round", live_players.get(GameOfPoker.HUMAN_INDEX));
+                twitter.postMessagetoUser("No one can open the betting, restarting round", live_players.get(GameOfPoker.HUMAN_INDEX));
                 deck.reset();
             }
         }
@@ -43,7 +43,7 @@ public class RoundOfPoker {
                 }
             }
             winner_index = findWinner();
-            twitter.postReply(live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
+            twitter.postMessagetoUser(live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
             live_players.get(winner_index).chips += pot;
         }
     }
@@ -91,13 +91,14 @@ public class RoundOfPoker {
         }
 
         if(!tweet_message.equals("")){
-            twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter.postMessagetoUser(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
         }
 
         return isHumanBusted;
     }
 
     public void dealCards() {
+        String tweet_message = "This is your hand ";
         for(int i = 0; i < live_players.size(); i++) {
             live_players.get(i).deal(deck);
             System.out.println(live_players.get(i).getName() +":\t"+ live_players.get(i).hand.toString()); //Testing only!
@@ -105,14 +106,14 @@ public class RoundOfPoker {
 
         try {
             HumanPlayer temp_human = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
-            temp_human.outputHand();
+            temp_human.outputHand(tweet_message);
         }
         catch(Exception e) {}    //Should never be reached, live_players.get(0) is either always the HumanPlayer or the game is over
 /*
         Picture picture = new Picture(live_players.get(0).cards.get());
         BufferedImage image = picture.createPicture();
 
-       twitter.postImage(live_players.get(0).cards, live_players.get(0).getName() +"\nYour Hand is "+ live_players.get(0).cards.toString(), live_players.get(0));
+       twitter.postImagetoUser(live_players.get(0).cards, live_players.get(0).getName() +"\nYour Hand is "+ live_players.get(0).cards.toString(), live_players.get(0));
     }
 */
     }
@@ -157,7 +158,7 @@ public class RoundOfPoker {
             PokerPlayer current_player = live_players.get(i % live_players.size());
 
             if((i % live_players.size() == GameOfPoker.HUMAN_INDEX && !tweet_message.equals("")) || tweet_message.length() > 100){
-                twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+                twitter.postMessagetoUser(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
                 tweet_message = "";
             }
 
@@ -234,10 +235,11 @@ public class RoundOfPoker {
                 current_player.previous_bet = current_player.current_bet;
             }
         }
-        twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+        twitter.postMessagetoUser(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
     }
 
     public void discard() {
+        String tweet_message = "This is your hand after the discard";
         for(int i = 0; i < live_players.size(); i++) {
             System.out.println(live_players.get(i).getName() + ":\t" + live_players.get(i).hand.toString()); //Testing only!
             live_players.get(i).discard_cards();
@@ -245,15 +247,16 @@ public class RoundOfPoker {
         }
         try {
             HumanPlayer temp_human = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
-            temp_human.outputHand();
+            temp_human.outputHand(tweet_message);
         }
         catch(Exception e) {    //Should never be reached, live_players.get(0) is either always the HumanPlayer or the game is over
         }
-        String tweet_message = "";
+
         for(int i = GameOfPoker.HUMAN_INDEX + 1; i < live_players.size(); i++){
             tweet_message += live_players.get(i).getName() +" discards "+ live_players.get(i).discards +" cards\n";
         }
-//        twitter.postImage(live_players.get(0).hand.card_hand, tweet_message, live_players.get(0));
+
+      //  twitter.postImagetoUser(live_players.get(0).hand.card_hand, tweet_message, live_players.get(0));
 //        I think this is looked after by temp_human.outputHand(); above - Gavin
     }
 
@@ -265,7 +268,7 @@ public class RoundOfPoker {
             for(int i = 0; i < live_players.size(); i++) {
                 tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).hand.toString() +" "+ live_players.get(i).hand.getGameValue() +"\n";
             }
-            twitter.postReply(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+            twitter.postMessagetoUser(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
         }
 
         for(int i = best_hand_index + 1; i < live_players.size(); i++){

@@ -1,13 +1,6 @@
 package poker;
 
-import twitter4j.Status;
-import twitter4j.TwitterException;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Created by Orla on 17/03/2017.
@@ -33,10 +26,10 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public boolean[] discard() {
-        twitter.postReply("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
-        twitter.getTweet("#rsdiscard", this);
+        twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
+        twitter.getTweetfromUser("#rsdiscard", this);
         boolean[] discard_cards = {false, false, false, false, false};
-        String status = twitter.getTweet("#rsdiscard", this);
+        String status = twitter.getTweetfromUser("#rsdiscard", this);
         char[] status_text = status.toCharArray();
         int discards_entered = 0;
         boolean uses_zero = false;
@@ -78,11 +71,11 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public void getBet(int highest_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players) {
-        twitter.postReply("Please tweet #rsbet with fold, call, or amount to raise the bet to",this);
+        twitter.postMessagetoUser("Please tweet #rsbet with fold, call, or amount to raise the bet to",this);
         //Scanner scanner = new Scanner(System.in);
         //String bet_answer = scanner.nextLine();
 
-        String bet_answer = twitter.getTweet("#rsbet",this);
+        String bet_answer = twitter.getTweetfromUser("#rsbet",this);
 
         if (bet_answer.contains("fold")){
             current_bet = -1;
@@ -115,30 +108,9 @@ public class HumanPlayer extends PokerPlayer {
         }
     }
 
-    public void outputHand() {
-        //TODO: Twitter code/Graphics image to tell the player what their hand is. Called after each deal/trade in RoundOfPoker.
-        twitter.postImage(hand.card_hand, "Your hand is " + hand.toString(), this);
-
-    }
-
-    public static void main(String[] args) {
-//        DeckOfCards deck = new DeckOfCards();
-//
-//        TwitterInterface twit = null;
-//        try {
-//            twit = new TwitterInterface();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        HumanPlayer player = new HumanPlayer(deck,twit);
-//        twit.postReply("This is your Hand"+player.hand.toString(),0);
-//        boolean[] discardlist = player.discardTList();
-//        player.discard_cards(discardlist);
-//        //System.out.println("Discards: " + );
-//        twit.postReply("Hand after discard" +player.hand.toString(),0);
-//        System.out.println("After discard: " + player.hand.toString());
-
+    public void outputHand(String tweet_message) {
+        // add + hand.toString to tweet message for testing
+        twitter.postImagetoUser(hand.card_hand,getName()+"  "+ tweet_message , this);
 
     }
 
