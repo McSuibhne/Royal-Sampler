@@ -100,22 +100,6 @@ public class GameOfPoker extends Thread{
         twitter.postMessagetoUser("You have tweeted the hashtag to end the game\nThank You for playing!", player_list.get(GameOfPoker.HUMAN_INDEX));
     }
 
-    // main method initialising twitter listener and waiting for game start request
-    public static void main(String[] args) {
-    /*  TwitterInterface twitterInterface = null;
-        try {
-            twitterInterface = new TwitterInterface();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        GameOfPoker gameOfPoker = new GameOfPoker(twitterInterface);
-        gameOfPoker.start();
-        boolean flag;
-        do {
-            flag = gameOfPoker.checkwanttoplay();
-            gameOfPoker.runRounds(flag);
-        }
-        while (flag != true);
-        gameOfPoker.exit();*/
-    }
+
+
 }

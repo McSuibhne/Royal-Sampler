@@ -65,7 +65,7 @@ public class TwitterInterface  {
 
     public void postMessagetoUser(String answer, PokerPlayer pokerPlayer) {
         HumanPlayer humanPlayer = (HumanPlayer) pokerPlayer;
-
+        answer= humanPlayer.getName()+" "+answer;
         if(answer.length() > 144){
             answer = answer.substring(0, 144);
         }
@@ -265,83 +265,6 @@ public class TwitterInterface  {
         return game;
     }
 
-    public boolean stopGame(String word) throws TwitterException {
-
-        stream = new TwitterStreamFactory(config).getInstance();
-        final boolean[] flag = {false};
-
-        StatusListener listener = new StatusListener() {
-
-
-            @Override
-            public void onException(Exception ex) {
-
-            }
-
-            public void onStatus(Status status) {
-
-                String t = "@" + status.getUser().getScreenName();
-                long id = status.getId();
-                for(int i = 0; i < gamelist.size(); i++) {
-                    synchronized(gamelist) {
-                        if(gamelist.get(i).tname.equals(t)) {
-                            gamelist.remove(i);
-                        }
-                    }
-                }
-
-                stream.shutdown();
-                //  game.notify ( );
-                System.out.println("unlocked");
-
-            }
-
-
-            @Override
-            public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-
-            }
-
-            @Override
-            public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
-
-            }
-
-            @Override
-            public void onScrubGeo(long userId, long upToStatusId) {
-
-            }
-
-            @Override
-            public void onStallWarning(StallWarning warning) {
-
-            }
-        };
-        stream.addListener(listener);
-        stream.filter(word);
-
-        try {
-            synchronized(lock) {
-                lock.wait();
-
-            }
-        } catch(InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        System.out.println("returning statuses");
-        stream.shutdown();
-        FilterQuery fq = new FilterQuery();
-        fq.track(word);
-        return flag[0];
-    }
-    public static void main(String[] args) throws TwitterException, IOException {
-        TwitterInterface twitterInterface = new TwitterInterface();
-        String[] keywords = {"#rsdealmein", "#rsdealmeout"};
-        twitterInterface.startGame(keywords, twitterInterface);
-
-
-    }
 
 
 }
