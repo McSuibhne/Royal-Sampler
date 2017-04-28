@@ -43,7 +43,7 @@ public class RoundOfPoker {
                 }
             }
             winner_index = findWinner();
-            twitter.postMessagetoUser(live_players.get(0).getName()+"  Player "+live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
+            twitter.postMessagetoUser(live_players.get(winner_index).getName()+" has won the round",live_players.get(0));
             live_players.get(winner_index).chips += pot;
         }
     }
@@ -235,7 +235,7 @@ public class RoundOfPoker {
                 current_player.previous_bet = current_player.current_bet;
             }
         }
-        twitter.postMessagetoUser(live_players.get(0).getName()+" "+tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
+        twitter.postMessagetoUser(tweet_message, live_players.get(GameOfPoker.HUMAN_INDEX));
     }
 
     public void discard() {
