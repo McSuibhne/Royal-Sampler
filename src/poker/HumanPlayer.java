@@ -27,27 +27,31 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public boolean[] discard() {
-       twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
+     // twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
         boolean[] discard_cards = {false, false, false, false, false};
-        String status = twitter.getTweetfromUser("#rsdiscard", this);
+        String status = "rsdiscard 0";//twitter.getTweetfromUser("#rsdiscard", this);
         char[] status_text = status.toCharArray();
         int discards_entered = 0;
 
 
-        for(int i = 0; i <status_text.length && discards_entered <= 3; i++) {
-            int discard_index = Character.getNumericValue(status_text[i]);
+        for(int i = 0; i <status_text.length ; i++) {
+            String tweetcharacter = Character.toString(status_text[i]);
+            if (tweetcharacter.matches("\\d{1}")) {
+                int discard_index = Integer.parseInt(tweetcharacter);
 
-            if (status.contains("0")) {
-                if (discard_index >= 0 && discard_index < 5) {
-                    discard_cards[discard_index] = true;
-                    discards_entered++;
-                }
+
+                if (status.contains("0")) {
+                    if (discard_index >= 0 && discard_index < 5) {
+                        discard_cards[discard_index] = true;
+                        discards_entered++;
+                    }
                 } else {
-                if (discard_index > 0 && discard_index <= 5) {
-                    discard_index--;
-                    discard_cards[discard_index] = true;
-                    discards_entered++;
+                    if (discard_index > 0 && discard_index <= 5) {
+                        discard_index = discard_index - 1;
+                        discard_cards[discard_index] = true;
+                        discards_entered++;
 
+                    }
                 }
             }
         }
@@ -71,7 +75,7 @@ public class HumanPlayer extends PokerPlayer {
 
 
     public void getBet(int highest_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players) {
-        twitter.postMessagetoUser("Please tweet #rsbet with fold, call, or amount to raise the bet to",this);
+
         //Scanner scanner = new Scanner(System.in);
         //String bet_answer = scanner.nextLine();
 
