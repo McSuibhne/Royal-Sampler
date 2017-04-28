@@ -25,11 +25,12 @@ public class HumanPlayer extends PokerPlayer {
         return tweetId;
     }
 
-
+//method gets the tweet from the user and  checks  if it contains a digit  then parses to int status contains 0
+    //then  discard  the position if doesnt coint 0  discard postion -1
     public boolean[] discard() {
-     // twitter.postMessagetoUser("Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
+     twitter.postMessagetoUser(" Enter up to 3 card position numbers (1, 2, 3...) you wish to discard and #rsdiscard", this );
         boolean[] discard_cards = {false, false, false, false, false};
-        String status = "rsdiscard 0";//twitter.getTweetfromUser("#rsdiscard", this);
+        String status = twitter.getTweetfromUser("#rsdiscard", this);
         char[] status_text = status.toCharArray();
         int discards_entered = 0;
 
@@ -73,9 +74,9 @@ public class HumanPlayer extends PokerPlayer {
          return discard_cards;
     }
 
-
+//gets the status from the user and  decides whether  to fold call or raise
     public void getBet(int highest_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players) {
-
+        twitter.postMessagetoUser(getName()+ "Please tweet #rsbet with fold, call, or amount to raise the bet to", this);
         //Scanner scanner = new Scanner(System.in);
         //String bet_answer = scanner.nextLine();
 
@@ -111,10 +112,9 @@ public class HumanPlayer extends PokerPlayer {
             }
         }
     }
-
+//posts userHand to twitter
     public void outputHand(String tweet_message) {
-        // add + hand.toString to tweet message for testing
-        twitter.postImagetoUser(hand.card_hand,getName()+"  "+ tweet_message , this);
+        twitter.postImagetoUser(hand.card_hand,getName()+"  "+ tweet_message+" "+ hand.toString(), this);
 
     }
     public static void main(String[] args) {
