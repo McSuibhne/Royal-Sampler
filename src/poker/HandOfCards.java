@@ -549,9 +549,9 @@ public class HandOfCards {
     //***FOR TESTING ONLY***
     //No setter is needed for final program, method just allows for card values to be set to test
     // unlikely hands such as Royal Flush etc. Will be removed later to ensure encapsulation.
-    public void testSetter(ArrayList<PlayingCard> new_hand){
+    public void testSetter(PlayingCard[] new_hand){
         for(int i=0; i<CARDS_IN_HAND; i++) {
-            card_hand[i] = new_hand.get(i);
+            card_hand[i] = new_hand[i];
         }
         sort();
 
@@ -644,7 +644,7 @@ public class HandOfCards {
                 System.out.println("\n" + test_list.get(i).get(0));
                 i++;
 
-                hand.testSetter(test_list.get(i));
+                //hand.testSetter(test_list.get(i));
                 System.out.println(hand.toString());
 
                 System.out.println("GameValue: " + hand.getGameValue());
