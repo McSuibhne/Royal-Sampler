@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
+/** Created by Andy on 29/04/2017 **/
+
 /**
  * Test class for DeckOfCards.
  * setUp() creates two DeckOfCards objects.

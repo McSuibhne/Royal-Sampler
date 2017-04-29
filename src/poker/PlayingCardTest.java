@@ -4,25 +4,7 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
-//Notes for Andy: (remove before submission)
-// This class is a really simple example, the others will end up being more difficult since you'll need to make more
-//  objects in the setUp. Eg: You'll need a Deck object first to pass into HandOfCards when you're doing that one.
-//
-//Just do the first few classes! Stop when you get to Game/Round/maybe even Players, basically anything that needs
-// Twitter stuff as arguments. That stuff is a nightmare to test in a vacuum and might end up doing something weird.
-//
-//tearDown() is meant to remove all the objects you made in setUp, it's probably completely optional. Just make sure you
-// stick an @After at the start so it doesn't delete all the objects before you get a chance to use them!
-//
-//There's a handy example template of a test class I used to make this one here: http://junit.sourceforge.net/doc/faq/faq.htm#tests_16
-// (Halfway down the page if it doesn't link right) There might be other helpful stuff in that faq but don't feel you
-//  have to read it because it's really long so I didn't.
-//
-//Think that's all, don't worry about making tests for methods that don't return anything. If anything's giving trouble,
-// leave it. We just need enough to go "We did tests, ta-da!"
-//
-//Btw, you should be able to right-click the test folder and hit "run all tests" which is a handy way of seeing what
-// you've got so far. :)
+/** Created by Andy on 29/04/2017 **/
 
 /**
  * Test class for PlayingCard.

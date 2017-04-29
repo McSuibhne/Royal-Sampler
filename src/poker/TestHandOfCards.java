@@ -7,6 +7,16 @@ import org.junit.Before;
 
 import org.junit.Test;
 
+/** Created by Andy on 29/04/2017 **/
+
+/**
+ * Test class for HandOfCards.
+ * setUp() creates a HandOfCards and DeckOfCards object, passing to them the required parameters.
+ * The @Before annotation is required to force setUp() to be executed before the tests themselves, ensuring both test
+ *  card objects are already made and ready to have each of their returning methods called.
+ * This verifies that all getter methods within HandOfCards function correctly.
+ */
+
 public class TestHandOfCards extends TestCase{
 
 	private DeckOfCards test_deck;
@@ -243,7 +253,7 @@ public class TestHandOfCards extends TestCase{
 }
 
 /*
-//Test Hearts
+		//Test Hearts
         PlayingCard test_AH = new PlayingCard("A", PlayingCard.HEARTS, 1, 14);
         PlayingCard test_2H = new PlayingCard("2", PlayingCard.HEARTS, 2, 2);
         PlayingCard test_3H = new PlayingCard("3", PlayingCard.HEARTS, 3, 3);
@@ -271,44 +281,4 @@ public class TestHandOfCards extends TestCase{
         PlayingCard test_AS = new PlayingCard("A", PlayingCard.SPADES, 1, 14);
         PlayingCard test_6S = new PlayingCard("6", PlayingCard.SPADES, 6, 6);
         PlayingCard test_10S = new PlayingCard("10", PlayingCard.SPADES, 10, 10);
-
-
-//Test hands
-        test_list.add(new ArrayList<>(Arrays.asList("Royal Flush:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_JH, test_KH, test_QH, test_AH)));   //Royal Flush
-        test_list.add(new ArrayList<>(Arrays.asList("Straight Flush (Ace Low):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_AH, test_3H, test_4H, test_2H, test_5H)));    //Straight Flush (Ace Low)
-        test_list.add(new ArrayList<>(Arrays.asList("Four of a Kind:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_JH, test_10S, test_10C, test_10D)));//Four of a Kind
-        test_list.add(new ArrayList<>(Arrays.asList("Full House:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_10C, test_9C, test_9H, test_10S))); //Full House
-        test_list.add(new ArrayList<>(Arrays.asList("Flush:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_5H, test_9H, test_KH, test_3H, test_AH)));    //Flush
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Ace High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10D, test_AS, test_KH, test_QH, test_JH)));   //Straight (Ace High)
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Ace Low):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_AS, test_3H, test_4H, test_2D, test_5H)));    //Straight (Ace Low)
-        test_list.add(new ArrayList<>(Arrays.asList("Three of a Kind:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_10C, test_KH, test_QH, test_10S))); //Three of a Kind
-        test_list.add(new ArrayList<>(Arrays.asList("Two Pair:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_9H, test_KH, test_10S, test_9C)));  //Two Pair
-        test_list.add(new ArrayList<>(Arrays.asList("One Pair:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_9H, test_7C, test_QH, test_9C)));    //One Pair
-        test_list.add(new ArrayList<>(Arrays.asList("High Hand:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_9H, test_7C, test_QH, test_AS)));    //High Hand
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Ace High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_3H, test_6H, test_AS, test_7C)));    //HighHand
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (King High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_JH, test_8C, test_KH, test_7C, test_QH)));   //High Hand
-        test_list.add(new ArrayList<>(Arrays.asList("Flush (Busted Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2H, test_3H, test_5H, test_6H, test_9H)));    //Flush (Busted Straight)
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Busted Flush):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_3H, test_4H, test_6H, test_5H)));    //Straight (Busted Flush)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Busted Flush):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_KH, test_3H, test_2H, test_6S, test_9H)));    //High Hand (Busted Flush)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Busted Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2C, test_3H, test_7C, test_6S, test_5H)));    //High Hand (Busted Straight)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (No Busted Flush or Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_JH, test_8C, test_KH, test_10S, test_2H)));   //High Hand
-
  */
