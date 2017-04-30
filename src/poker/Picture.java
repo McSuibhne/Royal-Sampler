@@ -102,16 +102,7 @@ public class Picture extends JFrame {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        setImage(image);
         return image;
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
-
-    public BufferedImage getImage() {
-        return this.image;
     }
 
 
