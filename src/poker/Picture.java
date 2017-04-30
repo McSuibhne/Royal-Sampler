@@ -22,7 +22,6 @@ public class Picture extends JFrame {
 
     public BufferedImage createPicture() {
 
-//        System.out.println(cards.toString()); // for testing and verification
         String cardsString[] = new String[5];
 
         // checks card suit and coverts to String to finish file name
@@ -104,14 +103,5 @@ public class Picture extends JFrame {
         }
         return image;
     }
-
-
-    // for testing, can be deleted before submission
-/*
-    public static void main(String[] args) throws IOException {
-        new Picture(new HandOfCards(new DeckOfCards())).setVisible(false);
-    }
-
-*/
 }
 
