@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws TwitterException, IOException {
         TwitterInterface twitterInterface = new TwitterInterface();
-        String[] keywords = {"#rsdealmein", "#rsdealmeout", TwitterInterface.BOT_TWITTER_NAME};
+        final String[] keywords = {"#rsdealmein", "#rsdealmeout", TwitterInterface.BOT_TWITTER_NAME};
         twitterInterface.startGame(keywords, twitterInterface);
     }
 }

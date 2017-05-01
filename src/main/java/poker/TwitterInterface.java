@@ -12,7 +12,7 @@ import java.util.WeakHashMap;
  * playing games until it is terminated. It also posts all updates to games and replies/images to users.*/
 @SuppressWarnings("ForLoopReplaceableByForEach, WeakerAccess")
 class TwitterInterface {
-    static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
+    static final String NAMES_FILE = "src/main/java/poker/TwitterConfig.txt";
     static final int NAMES_FILE_LENGTH = 4;
     static final String BOT_TWITTER_NAME = "@RoyalSampler1";
     static final long BOT_TWITTER_ID = 843979502158004225L;
@@ -21,7 +21,7 @@ class TwitterInterface {
     private final Object post_sync = new Object();
     private Twitter twitter;
     private Configuration config;
-    private ArrayList<GameOfPoker> game_list = new ArrayList<>();
+    private ArrayList<GameOfPoker> game_list = new ArrayList();
 
     /**TwitterInterface constructor initialises the core twitter objects needed for the application.*/
     public TwitterInterface() throws IOException {
@@ -61,7 +61,7 @@ class TwitterInterface {
      * (to update the most recent tweet for that game), for all tweets containing #rsdealmein or #rsdealmeout to
      * start and end games, and for any replies to the twitter bot which contain bet or discard instructions.
      * On each instance of one of the above the relevant thread is updated and the listener continues.*/
-    public void startGame(String[] word, TwitterInterface twitter_interface) throws TwitterException {
+    public void startGame(final String[] word, final TwitterInterface twitter_interface) throws TwitterException {
         TwitterStream stream = new TwitterStreamFactory(config).getInstance();
         StatusListener listener = new StatusListener() {
             public void onStatus(Status status) {
@@ -169,7 +169,6 @@ class TwitterInterface {
                 ex.printStackTrace();
             }
 
-            @Override
             public void onStallWarning(StallWarning sw) {
                 System.out.println(sw.getMessage());
             }

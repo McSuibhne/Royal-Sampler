@@ -44,7 +44,7 @@ public class GameOfPoker extends Thread{
      * Makes a human and a variable number of bots, placing them in the player_list ArrayList.*/
     private void createPlayers() {
         Random rand = new Random();
-        player_list = new ArrayList<>();
+        player_list = new ArrayList();
         deck = new DeckOfCards();
         human_player = new HumanPlayer(twitter, user, base_status_id);
         player_list.add(human_player);

@@ -10,8 +10,8 @@ import java.util.Random;
  * random (within boundaries) discard minimum determined by the game object in which the AIPlayer is made.*/
 @SuppressWarnings("ForLoopReplaceableByForEach, WeakerAccess")
 public class AIPlayer extends PokerPlayer {
-    static final String NAMES_FILE = "src/poker/AINames.txt";
-    static final String TELLS_FILE = "src/poker/AITells.txt";
+    static final String NAMES_FILE = "src/main/java/poker/AINames.txt";
+    static final String TELLS_FILE = "src/main/java/poker/AITells.txt";
     static final int NAMES_FILE_LENGTH = 60;
     static final int TELLS_FILE_LENGTH = 20;
     private String tell;

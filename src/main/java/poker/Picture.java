@@ -11,7 +11,7 @@ import java.io.IOException;
 /**Picture class creates and outputs a byte array of an image of the user's cards to improve presentation of the game*/
 @SuppressWarnings("ConstantConditions, WeakerAccess")
 class Picture extends JFrame {
-    static final String CARD_FILES_PATH = "resources/";
+    static final String CARD_FILES_PATH = "src/main/resources/";
     private PlayingCard[] cards;
 
     /**Picture constructor calls super in JFrame superclass*/
@@ -28,22 +28,17 @@ class Picture extends JFrame {
         // checks card suit and coverts to String to finish file name
         for (int i=0;i<cardsString.length;i++) {
             cardsString[i] = cards[i].getCardName() + "_of_";
-            switch(cards[i].getCardSuit()) {
-                case "\u2665":  // hearts
-                    cardsString[i] += "hearts";
-                    break;
-                case "\u2666":  // diamonds
-                    cardsString[i] += "diamonds";
-                    break;
-                case "\u2663":  // clubs
-                    cardsString[i] += "clubs";
-                    break;
-                case "\u2660":  // spades
-                    cardsString[i] += "spades";
-                    break;
-                default:
-                    System.out.println("ERROR IN SYMBOL TO STRING");
-                    break;
+            cardsString[i] = cards[i].getCardName() + "_of_";
+            if (cards[i].getCardSuit() == "\u2665") { // hearts
+                cardsString[i] += "hearts";
+            } else if (cards[i].getCardSuit() == "\u2666") { // diamonds
+                cardsString[i] += "diamonds";
+            } else if (cards[i].getCardSuit() == "\u2663") { // clubs
+                cardsString[i] += "clubs";
+            } else if (cards[i].getCardSuit() == "\u2660") { // spades
+                cardsString[i] += "spades";
+            } else {
+                System.out.println("ERROR IN SYMBOL TO STRING");
             }
         }
 
