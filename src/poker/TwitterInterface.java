@@ -6,6 +6,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.WeakHashMap;
 
 /**TwitterInterface is called only once by main but will listen continuously to tweets related to starting, ending, or
  * playing games until it is terminated. It also posts all updates to games and replies/images to users.*/
@@ -15,6 +16,7 @@ class TwitterInterface {
     static final int NAMES_FILE_LENGTH = 4;
     static final String BOT_TWITTER_NAME = "@RoyalSampler1";
     static final long BOT_TWITTER_ID = 843979502158004225L;
+    static final int MAX_GAME_NUMBER = 15;
     private final Object lock = new Object();
     private final Object post_sync = new Object();
     private Twitter twitter;
@@ -98,9 +100,20 @@ class TwitterInterface {
                             }
                         }
                         if(game_index != -1) {
-                            game_list.get(game_index).interruptMessage();
-                            game_list.get(game_index).interrupt();
-                            game_list.remove(game_index);
+                            if(game_list.size() < MAX_GAME_NUMBER) {
+                                game_list.get(game_index).interruptMessage();
+                                game_list.get(game_index).interrupt();
+                                game_list.remove(game_index);
+                            }
+                            else {
+                                StatusUpdate limit_reply = new StatusUpdate("@"+ status.getUser().getScreenName()
+                                        +" Sorry, the max limit of concurrent games has been reached. Try again in a few minutes!");
+                                try {
+                                    twitter.updateStatus(limit_reply);
+                                } catch(TwitterException e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
                         }
                         GameOfPoker game = new GameOfPoker(twitter_interface, user, status.getId());
                         game_list.add(game);

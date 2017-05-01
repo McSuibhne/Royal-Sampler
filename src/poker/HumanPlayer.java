@@ -50,7 +50,8 @@ public class HumanPlayer extends PokerPlayer {
         else {
             bet_size = " chips";
         }
-        twitter.postMessageToUser("Bet is " + highest_bet + bet_size + "\nReply to this tweet with fold/call/chips to raise to", this);
+
+        twitter.postMessageToUser("Bet is " + highest_bet + bet_size + ". Reply to this tweet with fold/call/chips to raise to", this);
         while(!reply_found) {
             synchronized(reply_sync) {
                 try {

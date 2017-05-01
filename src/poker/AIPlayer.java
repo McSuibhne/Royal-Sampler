@@ -178,12 +178,16 @@ public class AIPlayer extends PokerPlayer {
             current_bet = most_chips;
         }
 
-        if(current_bet < highest_bet){
+        if((current_bet < highest_bet || current_bet < 0) && current_bet != -1){
             current_bet = highest_bet;
         }
 
-        if(current_bet >= chips){
-            current_bet = highest_bet;
+        if(chips < 0 && chips != -1){
+            chips = 0;
+        }
+
+        if(current_bet-getPreviousBet() >= chips){
+            current_bet = chips + getPreviousBet();
             all_in = true;
         }
     }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * classes is identical, the implementation is included in this class to reduce code duplication. Where the behaviors
  * differ, the method is left abstract to force the subclasses to provide their own implementation.*/
 public abstract class PokerPlayer {
-    static final int STARTING_CHIPS = 10;
+    static final int STARTING_CHIPS = 20;
     private HandOfCards hand;
     String name;
     int chips;
