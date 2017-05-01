@@ -13,20 +13,18 @@ import java.io.File;
 public class Picture extends JFrame {
 
     PlayingCard[] cards;
-    BufferedImage image;
 
     public Picture (PlayingCard[] handOfCards) {
         super("Card Pane");
         cards = handOfCards;
     }
 
-    public BufferedImage createPicture() {
+    public byte[] createPicture() {
 
         String cardsString[] = new String[5];
 
         // checks card suit and coverts to String to finish file name
         for (int i=0;i<cardsString.length;i++) {
-            System.out.println(cards[i].getCardName());
             cardsString[i] = cards[i].getCardName() + "_of_";
             if (cards[i].getCardSuit() == "\u2665") { // hearts
                 cardsString[i] += "hearts";
@@ -94,14 +92,22 @@ public class Picture extends JFrame {
         Graphics g = output.createGraphics();
         handOfCardsPanel.print(g);
         g.dispose();
-        try {
-            ImageIO.write(output, "png", new File("src/twitter_output/hand_picture.png"));
-            BufferedImage image = output;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+        ByteArrayOutputStream image_stream = new ByteArrayOutputStream();
+        try{
+            ImageIO.write(output, "png", image_stream);
         }
-        return image;
+        catch(IOException e){}
+
+        return image_stream.toByteArray();
     }
+
+    // for testing, can be deleted before submission
+/*
+    public static void main(String[] args) throws IOException {
+        new Picture(new HandOfCards(new DeckOfCards())).setVisible(false);
+    }
+
+*/
 }
 

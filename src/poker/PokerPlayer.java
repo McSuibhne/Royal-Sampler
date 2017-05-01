@@ -32,7 +32,7 @@ public abstract class PokerPlayer {
     }
 
 
-    public abstract void getBet(int current_bet, int betting_round, int calls_since_raise, ArrayList<PokerPlayer> live_players);
+    public abstract void getBet(int current_bet, int betting_round, int calls_since_raise, int pot, ArrayList<PokerPlayer> live_players);
 
 
     public abstract boolean[] discard();
@@ -49,17 +49,6 @@ public abstract class PokerPlayer {
         }
         hand.sort();
     }
-
-
-
-
-
-    private String setPlayer_name(String name) {
-        return this.name;
-    }
-
-
-
 
     //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before
     // and after calling discard() to show the effects, as well as the number of discards that occur.
