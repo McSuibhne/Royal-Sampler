@@ -7,27 +7,29 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Gavin on 03/04/2017.
- */
+ * Game object, created and given its own new thread by the twitter interface each time #rsdealmein is tweeted.
+ * Sets up and runs through a full game of poker, creating multiple player, deck, and round objects.*/
 public class GameOfPoker extends Thread{
-    public static final int NUMBER_OF_BOTS = 4;
-    public static final int DISCARD_MINIMUM_RANGE = 15;
-    public static final int DISCARD_MAXIMUM = 90;
-    public static final int HUMAN_INDEX = 0;
-    TwitterInterface twitter;
-    public User user;
-    public long base_status_id;
-    boolean game_ended = false;
-    DeckOfCards deck;
-    ArrayList<PokerPlayer> player_list;
-    HumanPlayer human_player;
+    static final int NUMBER_OF_BOTS = 4;
+    static final int DISCARD_MINIMUM_RANGE = 15;
+    static final int DISCARD_MAXIMUM = 90;
+    static final int HUMAN_INDEX = 0;
+    private TwitterInterface twitter;
+    private User user;
+    private long base_status_id;
+    private boolean game_ended = false;
+    private DeckOfCards deck;
+    private ArrayList<PokerPlayer> player_list;
+    private HumanPlayer human_player;
 
-    public GameOfPoker(TwitterInterface twitter_interface, User twitter_user, long id) {
+    /**GameOfPoker constructor*/
+    GameOfPoker(TwitterInterface twitter_interface, User twitter_user, long id) {
         twitter = twitter_interface;
         user = twitter_user;
         base_status_id = id;
     }
 
+    /**Called by the start() method in the Thread superclass. Necessary for multithreading.*/
     public void run() {
         createPlayers();
         try{
@@ -38,9 +40,9 @@ public class GameOfPoker extends Thread{
         }
     }
 
-    // Will wait for notice from twitter bot that a player has requested a game
-    // Currently just called to start game from command line
-    public void createPlayers() {
+    /**Called by run() at the beginning of the thread operation.
+     * Makes a human and a variable number of bots, placing them in the player_list ArrayList.*/
+    private void createPlayers() {
         Random rand = new Random();
         player_list = new ArrayList<>();
         deck = new DeckOfCards();
@@ -49,15 +51,28 @@ public class GameOfPoker extends Thread{
         for(int i=HUMAN_INDEX+1; i<=NUMBER_OF_BOTS; i++){
             int discard_minimum = rand.nextInt(DISCARD_MINIMUM_RANGE)+(DISCARD_MAXIMUM-(DISCARD_MINIMUM_RANGE*i));
             player_list.add(new AIPlayer(i, discard_minimum));
-            //System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
         }
     }
 
-    public HumanPlayer getHumanPlayer(){
+    /**Getter for the unique twitter user object of a poker game.*/
+    User getUser(){
+        return user;
+    }
+
+    /**Getter for the single human object in this game.*/
+    HumanPlayer getHumanPlayer(){
         return (HumanPlayer) player_list.get(HUMAN_INDEX);
     }
 
-    public void playGame() throws TwitterException {
+    /**Getter of the boolean flag to signal this game has ended naturally and should have its thread terminated by the TwitterInterface*/
+    boolean isGameEnded(){
+        return game_ended;
+    }
+
+    /**Method called by run() that should execute continuously within its thread for the game's duration.
+     * Controls flow of game by creating rounds and governing which players are still in the game.*/
+    @SuppressWarnings("StringConcatenationInLoop")
+    private void playGame() throws TwitterException {
         Boolean game_over = false;
         String win_message = "";
         twitter.postMessageToUser("You have tweeted the RoyalSampler hashtag to play Poker\nWelcome to 5 card draw Poker!", human_player);
@@ -74,7 +89,7 @@ public class GameOfPoker extends Thread{
 
             String tweet_message = "";
             for(int i=0; i<player_list.size(); i++){
-                if(player_list.get(i).chips < RoundOfPoker.ANTE) {
+                if(player_list.get(i).getChips() < RoundOfPoker.ANTE) {
                     tweet_message += player_list.get(i).getName() + " has run out of chips and is eliminated\n";
                     if(i == HUMAN_INDEX) {
                         win_message = "You have been eliminated from the game.\nThanks for playing, better luck next time!";
@@ -98,7 +113,7 @@ public class GameOfPoker extends Thread{
 
             if(player_list.size()==1){
                 game_over = true;
-                win_message = "You have won. Congratulations!\nThank you for playing";
+                win_message = "You have won! Congratulations!\nThank you for playing";
                 game_ended = true;
             }
         }
@@ -106,11 +121,14 @@ public class GameOfPoker extends Thread{
         twitter.endGame(human_player);
     }
 
-    public void quitMessage(){
+    /**Delivers message to the player if they tweet #rsdealmeout to end the game prematurely.*/
+    void quitMessage(){
         twitter.postMessageToUser("You have tweeted the hashtag to end the game\nThank You for playing!", human_player);
     }
 
-    public void interruptMessage(){
+    /**Delivers message to the player if they tweet #rsdealmein while playing this game, ending the current object
+     * and creating a fresh one.*/
+    void interruptMessage(){
         twitter.postMessageToUser("You have tweeted the hashtag to start an new game, ending the one currently " +
                 "in progress\nThank You for playing!", human_player);
     }

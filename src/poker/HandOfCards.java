@@ -1,28 +1,26 @@
 package poker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-
+/**Hand object holds 5 cards and contains a large number of methods to evaluate and score the card combination
+ * according to formulae explained below.*/
+@SuppressWarnings("StringConcatenationInLoop, WeakerAccess")
 public class HandOfCards {
-
     //Hand Score constants chosen at 1000000 marks, as no intra-cards-type
     // ranking function can increase a score by more than 10000000.
-    public static final int STRAIGHT_FLUSH_VALUE = 8000000;
-    public static final int FOUR_OF_A_KIND_VALUE = 7000000;
-    public static final int FULL_HOUSE_VALUE = 6000000;
-    public static final int FLUSH_VALUE = 5000000;
-    public static final int STRAIGHT_VALUE = 4000000;
-    public static final int THREE_OF_A_KIND_VALUE = 3000000;
-    public static final int TWO_PAIR_VALUE = 2000000;
-    public static final int ONE_PAIR_VALUE = 1000000;
-    public static final int CARDS_IN_HAND = 5;
-    public static final int SUITS_IN_DECK = 4;
-    public static final int WEIGHTING_VALUE = 14; //Weighting value set at 14 as this is the highest possible card value
-    public PlayingCard[] card_hand = new PlayingCard[CARDS_IN_HAND];
-    public DeckOfCards deck;
+    static final int STRAIGHT_FLUSH_VALUE = 8000000;
+    static final int FOUR_OF_A_KIND_VALUE = 7000000;
+    static final int FULL_HOUSE_VALUE = 6000000;
+    static final int FLUSH_VALUE = 5000000;
+    static final int STRAIGHT_VALUE = 4000000;
+    static final int THREE_OF_A_KIND_VALUE = 3000000;
+    static final int TWO_PAIR_VALUE = 2000000;
+    static final int ONE_PAIR_VALUE = 1000000;
+    static final int CARDS_IN_HAND = 5;
+    static final int SUITS_IN_DECK = 4;
+    static final int WEIGHTING_VALUE = 14; //Weighting value set at 14 as this is the highest possible card value
+    PlayingCard[] card_hand = new PlayingCard[CARDS_IN_HAND];
+    DeckOfCards deck;
 
-    //Deck is initialized and 5 cards are dealt.
+    /**Hand constructor creates a deck and deals 5 cards into an array.*/
     public HandOfCards(DeckOfCards card_deck) {
         deck = card_deck;
         for(int i = 0; i < CARDS_IN_HAND; i++) {
@@ -31,8 +29,8 @@ public class HandOfCards {
         sort();
     }
 
-    //Performs a Bubble Sort to quickly sort the cards.
-    protected void sort(){
+    /**Performs a Bubble Sort to quickly sort the cards.*/
+    void sort(){
         for(int i = 0; i < CARDS_IN_HAND - 1; i++){
             for(int j = 0; j < CARDS_IN_HAND - 1; j++){
                 if(card_hand[j].getGameValue() > card_hand[j + 1].getGameValue()){
@@ -44,45 +42,45 @@ public class HandOfCards {
         }
     }
 
-    //Tests for Royal Flush by checking that all suits match and card values are 10 J Q K A.
-    public boolean isRoyalFlush(){
-        return (card_hand[0].getCardSuit() == card_hand[1].getCardSuit() && card_hand[0].getCardSuit() == card_hand[2].getCardSuit()
-                && card_hand[0].getCardSuit() == card_hand[3].getCardSuit() && card_hand[0].getCardSuit() == card_hand[4].getCardSuit()
+    /**Tests for Royal Flush by checking that all suits match and card values are 10 J Q K A.*/
+    boolean isRoyalFlush(){
+        return (card_hand[0].getCardSuit().equals(card_hand[1].getCardSuit()) && card_hand[0].getCardSuit().equals(card_hand[2].getCardSuit())
+                && card_hand[0].getCardSuit().equals(card_hand[3].getCardSuit()) && card_hand[0].getCardSuit().equals(card_hand[4].getCardSuit())
                 && card_hand[0].getGameValue() == 10 && card_hand[1].getGameValue() == 11 && card_hand[2].getGameValue() == 12
                 && card_hand[3].getGameValue() == 13 && card_hand[4].getGameValue() == 14);
     }
 
-    //Tests for Straight Flush by checking that all suits match and card values are in sequence. Also handles an ace-low
-    // straight, and ensures that the method cannot return true for a royal flush.
-    public boolean isStraightFlush(){
+    /**Tests for Straight Flush by checking that all suits match and card values are in sequence. Also handles an ace-low
+     * straight, and ensures that the method cannot return true for a royal flush.*/
+    boolean isStraightFlush(){
         return isStraight() && isFlush() && !isRoyalFlush();
     }
 
-    //Tests for Four of a Kind by checking if there is a block of 4 identical cards after sorting.
-    public boolean isFourOfAKind(){
+    /**Tests for Four of a Kind by checking if there is a block of 4 identical cards after sorting.*/
+    boolean isFourOfAKind(){
         return (card_hand[0].getGameValue() == card_hand[3].getGameValue() || card_hand[1].getGameValue() == card_hand[4].getGameValue());
     }
 
-    //Tests for Full House by checking if there is a triple where both spare cards match.
-    public boolean isFullHouse(){
+    /**Tests for Full House by checking if there is a triple where both spare cards match.*/
+    boolean isFullHouse(){
         return ((card_hand[0].getGameValue() == card_hand[2].getGameValue() && card_hand[3].getGameValue() == card_hand[4].getGameValue())
                 || (card_hand[0].getGameValue() == card_hand[1].getGameValue() && card_hand[2].getGameValue() == card_hand[4].getGameValue()));
     }
 
-    //Tests for Flush by checking if all cards' suits match while also ensuring that they do not form a straight.
-    public boolean isFlush(){
+    /**Tests for Flush by checking if all cards' suits match while also ensuring that they do not form a straight.*/
+    boolean isFlush(){
         boolean is_flush = true;
         for(int i=0; i<CARDS_IN_HAND-1; i++) {
-            if(card_hand[i].getCardSuit() != card_hand[i+1].getCardSuit()) {
+            if(!card_hand[i].getCardSuit().equals(card_hand[i+1].getCardSuit())) {
                 is_flush = false;
             }
         }
         return is_flush;
     }
 
-    //Tests for Straight by checking if the cards' values form a sequence (and also handling an ace-low straight), while
-    // also making sure that their suits do not all match.
-    public boolean isStraight(){
+    /**Tests for Straight by checking if the cards' values form a sequence (and also handling an ace-low straight), while
+     * also making sure that their suits do not all match.*/
+    boolean isStraight(){
         boolean is_straight = true;
         for(int i=0; i<CARDS_IN_HAND-2; i++) {
             if((card_hand[i].getGameValue() + 1) != card_hand[i + 1].getGameValue()) {
@@ -93,9 +91,9 @@ public class HandOfCards {
                 || (card_hand[4].getGameValue() == 14 && card_hand[0].getGameValue() == 2));
     }
 
-    //Tests for Three of a Kind by checking if there exists a block of 3 matching cards without a 4th match in the cards.
-    // Also ensures that the 2 spare cards do not match each other.
-    public boolean isThreeOfAKind(){
+    /**Tests for Three of a Kind by checking if there exists a block of 3 matching cards without a 4th match in the cards.
+     * Also ensures that the 2 spare cards do not match each other.*/
+    boolean isThreeOfAKind(){
         return (((card_hand[0].getGameValue() == card_hand[2].getGameValue() && card_hand[2].getGameValue() != card_hand[3].getGameValue()
                 && card_hand[3].getGameValue() != card_hand[4].getGameValue())
                 || (card_hand[1].getGameValue() == card_hand[3].getGameValue() && card_hand[0].getGameValue() != card_hand[1].getGameValue()
@@ -104,10 +102,9 @@ public class HandOfCards {
                 && card_hand[1].getGameValue() != card_hand[2].getGameValue())));
     }
 
-    //Tests for Two Pair by checking if there exists 2 matches between 2 different pairs cards that do not have the
-    // same value, as well as one spare card that does not match either of the pairs.
-
-    public boolean isTwoPair(){
+    /**Tests for Two Pair by checking if there exists 2 matches between 2 different pairs cards that do not have the
+     * same value, as well as one spare card that does not match either of the pairs.*/
+    boolean isTwoPair(){
         return ((card_hand[0].getGameValue() == card_hand[1].getGameValue() && card_hand[2].getGameValue() == card_hand[3].getGameValue()
                 && card_hand[3].getGameValue() != card_hand[4].getGameValue() && card_hand[1].getGameValue() != card_hand[2].getGameValue())
                 || (card_hand[0].getGameValue() == card_hand[1].getGameValue() && card_hand[3].getGameValue() == card_hand[4].getGameValue()
@@ -116,8 +113,8 @@ public class HandOfCards {
                 && card_hand[0].getGameValue() != card_hand[1].getGameValue() && card_hand[2].getGameValue() != card_hand[3].getGameValue()));
     }
 
-    //Tests for One Pair by checking if there exists a match between 2 cards and no other matches in the cards.
-    public boolean isOnePair(){
+    /**Tests for One Pair by checking if there exists a match between 2 cards and no other matches in the cards.*/
+    boolean isOnePair(){
         return (((card_hand[0].getGameValue() == card_hand[1].getGameValue() && !(card_hand[1].getGameValue() == card_hand[2].getGameValue()
                 || card_hand[2].getGameValue() == card_hand[3].getGameValue() || card_hand[3].getGameValue() == card_hand[4].getGameValue()))
                 || (card_hand[1].getGameValue() == card_hand[2].getGameValue() && !(card_hand[0].getGameValue() == card_hand[1].getGameValue()
@@ -129,16 +126,16 @@ public class HandOfCards {
         );
     }
 
-    //Returns true for High Hand if all other tests fail.
-    public boolean isHighHand(){
+    /**Returns true for High Hand if all other tests fail.*/
+    boolean isHighHand(){
         return !(isRoyalFlush() ||  isStraightFlush() || isFourOfAKind() ||  isFullHouse() ||  isFlush()
                 ||  isStraight() || isThreeOfAKind() ||  isTwoPair() ||  isOnePair());
     }
 
-    //All hands in this conditional use the same formula for scoring intra-cards ties, so the only difference is
-    // the constant that is added. Straight flush and royal flush use the same constant as a royal flush will be
-    // scored higher than any possible straight flush.
-    public int getGameValue(){
+    /**All hands in this conditional use the same formula for scoring intra-cards ties, so the only difference is
+     * the constant that is added. Straight flush and royal flush use the same constant as a royal flush will be
+     * scored higher than any possible straight flush.*/
+    int getGameValue(){
         int total_hand_score = 0;
 
         if(isHighHand()){
@@ -185,8 +182,8 @@ public class HandOfCards {
         return total_hand_score;
     }
 
-    //Sums the values of all cards after weighting them according to rank in the cards, the same ordering that any
-    // tiebreaker will follow. Returns this sum as the cards's score.
+    /**Sums the values of all cards after weighting them according to rank in the cards, the same ordering that any
+     * tiebreaker will follow. Returns this sum as the cards's score.*/
     private int getHighCardScore(){
         int high_card_score = 0;
 
@@ -197,9 +194,8 @@ public class HandOfCards {
         return high_card_score;
     }
 
-    //getOnePairScore method first identifies the paired cards as they should receive the most significant weight regardless
-    // of their values.
-    // It then weights the remaining cards in order of value before returning their sum as the cards score.
+    /**getOnePairScore method first identifies the paired cards as they should receive the most significant weight regardless
+     * of their values. It then weights the remaining cards in order of value before returning their sum as the cards score.*/
     private int getOnePairScore(){
         int one_pair_score = 0;
 
@@ -230,6 +226,9 @@ public class HandOfCards {
         return one_pair_score;
     }
 
+    /**getTwoPairScore method first identifies the higher paired cards as they should receive the most significant
+     * weight regardless of their values. Next, the lower pair are weighted and added to the total. Lastly it
+     * evaluates the lone kicker before returning their sum as the cards score.*/
     private int getTwoPairScore(){
         int two_pair_score = 0;
 
@@ -251,25 +250,11 @@ public class HandOfCards {
         return two_pair_score;
     }
 
-    /*Explanation Of Discard Probability Approach:
-        This method returns the probability that discarding a given card will *not disimprove* the cards significantly.
-
-        While the link given in the assignment slides is very very useful for understanding the probabilities of
-        improving a cards, this on its own is not helpful to a player.
-        For example, if a player has a 3-of-a-kind, there is an 11.5% chance of improving the cards by trading the two odd cards.
-
-        However, since the player has very little to lose by trading the two odd cards, that 11.5% is not a good indicator
-        of whether he should swap them.
-        Instead, this method returns the inverse of the odds of worsening the cards by swapping a card.
-
-        eg. Say the player has a straight with 4 of the cards being of the same suit. While they could possibly end up
-        with a better cards (a flush or straight flush) by trading the odd-suited card, they also run the risk of ruining
-        the straight they have and being left with junk.
-        As ~80% of the possible cards would make this cards worse, the method would return ~20% discard probability in this case
-
-        All formulae are explained in comments, as well as the private helper methods it makes use of.
-    */
-    public int[][] getDiscardProbability(){
+    /*To increase AI variability and cohesion, getDiscardProbability returns an 2D array of possible discard strategies,
+    * from which the bot will pick depending on its discard minimum. This allows a risky player to commit fully to drawing
+    * to a flush or straight (lower chance decision) and a non-risky player to completely play it safe and discard their
+    * kickers, instead of forcing one strategy on all players or combining mis-matched discard sets.*/
+    int[][] getDiscardProbability(){
         int[][] probabilities = new int[][]{{0, 0, 0, 0, 0},{0, 0, 0, 0, 0},{0, 0, 0, 0, 0}};
         for(int cardPosition=0; cardPosition<CARDS_IN_HAND; cardPosition++) {
             //Calls helper method getHighCardProbability to return discard probability for the given card.
@@ -344,9 +329,9 @@ public class HandOfCards {
         return probabilities;
     }
 
-    //In a high card cards, the method checks if the cards resembles a broken flush or straight, and trades the odd card
-    // if so. Otherwise it assigns high discard probabilities to the worst 3 cards in the cards, slightly weighting the
-    // scores by how strong the cards' values are.
+    /**In a high card cards, the method checks if the cards resembles a broken flush or straight, and trades the odd card
+     * if so. Otherwise it assigns high discard probabilities to the worst 3 cards in the cards, slightly weighting the
+     * scores by how strong the cards' values are.*/
     private int getHighCardProbability(int cardPosition){
         int probability = 0;
         boolean busted_flush = false;
@@ -392,8 +377,8 @@ public class HandOfCards {
         return probability;
     }
 
-    //As the chances of improving one pair cards to straight or flush are low, this will return a high discard
-    //probability for the kicker cards only, which will be slightly weighted by how strong the cards are.
+    /**As the chances of improving one pair cards to straight or flush are low, this will return a high discard
+     * probability for the kicker cards only, which will be slightly weighted by how strong the cards are.*/
     private int[] getOnePairProbability(int cardPosition){
         int[] pair_probabilities = new int[3];
         boolean is_in_pair = false;
@@ -424,8 +409,8 @@ public class HandOfCards {
         return pair_probabilities;
     }
 
-    //A two pair cannot be easily improved by discarding cards in either of the pairs. This will return a high discard
-    // probability for the kicker card only, which will be slightly weighted by how strong the card is.
+    /**A two pair cannot be easily improved by discarding cards in either of the pairs. This will return a high discard
+     * probability for the kicker card only, which will be slightly weighted by how strong the card is.*/
     private int getTwoPairProbability(int cardPosition) {
         int probability = 0;
         boolean is_kicker = true;
@@ -442,14 +427,10 @@ public class HandOfCards {
         return probability;
     }
 
-    //Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
-    // in the cards, it replaces the card at the position currently being evaluated and sorts the cards before checking to
-    // see if this creates a straight.
-    // If so, it increases the returned number of possible straights by 1.
-    // After each iteration the cards is changed back to its' original state so the next change will occur in the correct place.
-    // Originally this method returned a boolean but this made extra code necessary to calculate how likely it was that
-    // a straight could be made. Now it performs both tasks by simply returning the number of possible straights that can be
-    // made by trading the card in question, and a return value of 0 is interpreted as equivalent to false.
+    /**Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
+     * in the hand, it replaces the card at the position currently being evaluated and checks if this creates a
+     * straight. If so, it increases the returned number of possible flushes by 1. While slightly resource-intensive,
+     * this implementation allows for a more accurate assessment of improvement chance and risk. */
     private int isBustedStraight(int card_position) {
         DeckOfCards comparison_deck = new DeckOfCards();
         PlayingCard[] original_hand = card_hand.clone();
@@ -476,13 +457,10 @@ public class HandOfCards {
         return potential_straights;
     }
 
-    //Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
-    // in the cards, it replaces the card at the position currently being evaluated and checks to see if this creates a
-    // flush.
-    // If so, it increases the returned number of possible flushes by 1.
-    // Originally this method returned a boolean but this made extra code necessary to calculate how likely it was that
-    // a flush could be made. Now it performs both tasks by simply returning the number of possible flushes that can be
-    // made by trading the card in question, and a return value of 0 is interpreted as equivalent to false.
+    /**Creates a temporary deck and deals all 52 possible cards from it. For each new possible card that is not already
+     * in the hand, it replaces the card at the position currently being evaluated and checks if this creates a
+     * flush. If so, it increases the returned number of possible flushes by 1. While slightly resource-intensive,
+     * this implementation allows for a more accurate assessment of improvement chance and risk. */
     private int isBustedFlush(int card_position) {
         DeckOfCards comparison_deck = new DeckOfCards();
         PlayingCard original_card = card_hand[card_position];
@@ -507,7 +485,9 @@ public class HandOfCards {
         return potential_flushes;
     }
 
-    public boolean isDrawingHand(){
+    /**Small method used primarily by the getBet method of the AI players. Returns true if the hand is one card from
+     * a straight or a flush*/
+    boolean isDrawingHand(){
         boolean drawing_hand = false;
         for(int i=0; i<CARDS_IN_HAND; i++){
             if(isBustedStraight(i) > 0 || isBustedFlush(i) > 0){
@@ -517,16 +497,13 @@ public class HandOfCards {
         return drawing_hand;
     }
 
-    //Small method that should be called from the PokerPlayer class, necessitating the protected access modifier.
-    // The card at the given index of the deck is returned to the deck and replaced by the next one dealt from it.
-    // As both methods in deck are thread-safe, this should not create any race conditions even if two players try to
-    // return cards at the same time.
-    protected void discardCard(int card_position){
+    /**Discard method removes card in the array at the given position, usually called from within the PokerPlayer class*/
+    void discardCard(int card_position){
         deck.returnCard(card_hand[card_position]);
         card_hand[card_position] = deck.dealNext();
     }
 
-    //Simple toString method to make cards more readable
+    /**Simple toString method to make cards more readable. Returns combination of type and unicode suit for all 5 cards*/
     public String toString(){
         String hand_string = "[";
         for(int i = 0; i < card_hand.length; i++){
@@ -540,129 +517,12 @@ public class HandOfCards {
         }
         return hand_string;
     }
-/*
-    // Added by Gavin for Picture functionality
-    public PlayingCard[] get() {
-        return card_hand;
-    }
-*/
-    //***FOR TESTING ONLY***
-    //No setter is needed for final program, method just allows for card values to be set to test
-    // unlikely hands such as Royal Flush etc. Will be removed later to ensure encapsulation.
-    public void testSetter(PlayingCard[] new_hand){
-        for(int i=0; i<CARDS_IN_HAND; i++) {
-            card_hand[i] = new_hand[i];
-        }
+
+    /***FOR TESTING ONLY***
+    * No setter is needed for the main program, method just allows for card values to be set to test
+    * unlikely hands such as Royal Flush within the unit testing.*/
+    void testSetter(PlayingCard[] new_hand){
+        card_hand = new_hand.clone();
         sort();
-
-    }
-
-    //Main initializes a new deck and cards, generating a random cards of cards as per the class's normal function.
-    // It then creates some specific cards and assembles them into known poker hands, before placing these combinations
-    // in a list of tests.
-    // Main then iterates through this test list, outputting the values of all card cards types, values, and discard
-    // probability methods to show that each is working as specified. Once this code is not needed, the test setter
-    // can be removed.
-    // Test list implemented using array lists to allow for growing list of tests as well as both title and cards members.
-    public static void main(String[] args) {
-        DeckOfCards deck = new DeckOfCards();
-        HandOfCards hand = new HandOfCards(deck);
-        ArrayList<ArrayList> test_list = new ArrayList<>();
-
-        //Test Hearts
-        PlayingCard test_AH = new PlayingCard("A", PlayingCard.HEARTS, 1, 14);
-        PlayingCard test_2H = new PlayingCard("2", PlayingCard.HEARTS, 2, 2);
-        PlayingCard test_3H = new PlayingCard("3", PlayingCard.HEARTS, 3, 3);
-        PlayingCard test_4H = new PlayingCard("4", PlayingCard.HEARTS, 4, 4);
-        PlayingCard test_5H = new PlayingCard("5", PlayingCard.HEARTS, 5, 5);
-        PlayingCard test_6H = new PlayingCard("6", PlayingCard.HEARTS, 6, 6);
-        PlayingCard test_9H = new PlayingCard("9", PlayingCard.HEARTS, 9, 9);
-        PlayingCard test_10H = new PlayingCard("10", PlayingCard.HEARTS, 10, 10);
-        PlayingCard test_JH = new PlayingCard("J", PlayingCard.HEARTS, 11, 11);
-        PlayingCard test_QH = new PlayingCard("Q", PlayingCard.HEARTS, 12, 12);
-        PlayingCard test_KH = new PlayingCard("K", PlayingCard.HEARTS, 13, 13);
-
-        //Test Diamonds
-        PlayingCard test_2D = new PlayingCard("2", PlayingCard.DIAMONDS, 2, 2);
-        PlayingCard test_10D = new PlayingCard("10", PlayingCard.DIAMONDS, 10, 10);
-
-        //Test Clubs
-        PlayingCard test_2C = new PlayingCard("2", PlayingCard.CLUBS, 2, 2);
-        PlayingCard test_7C = new PlayingCard("7", PlayingCard.CLUBS, 7, 7);
-        PlayingCard test_8C = new PlayingCard("8", PlayingCard.CLUBS, 8, 8);
-        PlayingCard test_9C = new PlayingCard("9", PlayingCard.CLUBS, 9, 9);
-        PlayingCard test_10C = new PlayingCard("10", PlayingCard.CLUBS, 10, 10);
-
-        //Test Spades
-        PlayingCard test_AS = new PlayingCard("A", PlayingCard.SPADES, 1, 14);
-        PlayingCard test_6S = new PlayingCard("6", PlayingCard.SPADES, 6, 6);
-        PlayingCard test_10S = new PlayingCard("10", PlayingCard.SPADES, 10, 10);
-
-        //Test hands
-        test_list.add(new ArrayList<>(Arrays.asList("Royal Flush:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_JH, test_KH, test_QH, test_AH)));   //Royal Flush
-        test_list.add(new ArrayList<>(Arrays.asList("Straight Flush (Ace Low):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_AH, test_3H, test_4H, test_2H, test_5H)));    //Straight Flush (Ace Low)
-        test_list.add(new ArrayList<>(Arrays.asList("Four of a Kind:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_JH, test_10S, test_10C, test_10D)));//Four of a Kind
-        test_list.add(new ArrayList<>(Arrays.asList("Full House:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_10C, test_9C, test_9H, test_10S))); //Full House
-        test_list.add(new ArrayList<>(Arrays.asList("Flush:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_5H, test_9H, test_KH, test_3H, test_AH)));    //Flush
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Ace High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10D, test_AS, test_KH, test_QH, test_JH)));   //Straight (Ace High)
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Ace Low):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_AS, test_3H, test_4H, test_2D, test_5H)));    //Straight (Ace Low)
-        test_list.add(new ArrayList<>(Arrays.asList("Three of a Kind:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_10C, test_KH, test_QH, test_10S))); //Three of a Kind
-        test_list.add(new ArrayList<>(Arrays.asList("Two Pair:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_10H, test_9H, test_KH, test_10S, test_9C)));  //Two Pair
-        test_list.add(new ArrayList<>(Arrays.asList("One Pair:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_9H, test_7C, test_QH, test_9C)));    //One Pair
-        test_list.add(new ArrayList<>(Arrays.asList("High Hand:")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_9H, test_7C, test_QH, test_AS)));    //High Hand
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Ace High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_3H, test_6H, test_AS, test_7C)));    //HighHand
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (King High):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_JH, test_8C, test_KH, test_7C, test_QH)));   //High Hand
-        test_list.add(new ArrayList<>(Arrays.asList("Flush (Busted Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2H, test_3H, test_5H, test_6H, test_9H)));    //Flush (Busted Straight)
-        test_list.add(new ArrayList<>(Arrays.asList("Straight (Busted Flush):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2D, test_3H, test_4H, test_6H, test_5H)));    //Straight (Busted Flush)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Busted Flush):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_KH, test_3H, test_2H, test_6S, test_9H)));    //High Hand (Busted Flush)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (Busted Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_2C, test_3H, test_7C, test_6S, test_5H)));    //High Hand (Busted Straight)
-        test_list.add(new ArrayList<>(Arrays.asList("HighHand (No Busted Flush or Straight):")));
-        test_list.add(new ArrayList<>(Arrays.asList(test_JH, test_8C, test_KH, test_10S, test_2H)));   //High Hand
-
-        //Test loop shows all cards classification and cards scoring code works properly and has no overlap between hands,
-        // while scoring similar hands according to brief.
-        // It then outputs the discard probabilities for each card.
-        for(int i=0; i<test_list.size()+1; i++) {
-            if(i<test_list.size()) {
-                System.out.println("\n" + test_list.get(i).get(0));
-                i++;
-
-                //hand.testSetter(test_list.get(i));
-                System.out.println(hand.toString());
-
-                System.out.println("GameValue: " + hand.getGameValue());
-                System.out.println("isRoyalFlush: " + hand.isRoyalFlush());
-                System.out.println("isStraightFlush: " + hand.isStraightFlush());
-                System.out.println("isFourOfAKind: " + hand.isFourOfAKind());
-                System.out.println("isFullHouse: " + hand.isFullHouse());
-                System.out.println("isFlush: " + (hand.isFlush() && !hand.isStraight()));
-                System.out.println("isStraight: " + (hand.isStraight() && !hand.isFlush()));
-                System.out.println("isThreeOfAKind: " + hand.isThreeOfAKind());
-                System.out.println("isTwoPair: " + hand.isTwoPair());
-                System.out.println("isOnePair: " + hand.isOnePair());
-                System.out.println("isHighHand: " + hand.isHighHand());
-
-                for(int j=0; j<CARDS_IN_HAND; j++){
-                    System.out.println("Card " + j + ": " + hand.getDiscardProbability());
-                }
-            }
-        }
     }
 }

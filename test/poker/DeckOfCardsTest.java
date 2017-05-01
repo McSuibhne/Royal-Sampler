@@ -29,14 +29,15 @@ public class DeckOfCardsTest extends TestCase{
         test_deck_1 = null;
         test_deck_2 = null;
     }
-    
+
+    /**Test method for dealNext(). Should return PlayingCards for the first 52 calls of dealNext() and null thereafter.*/
     public void testDealNext(){
-    	for(int i = 0; i<53; i++){
-    		test_deck_1.dealNext();
-    		test_deck_2.dealNext();
+    	for(int i = 0; i<DeckOfCards.CARDS_IN_DECK; i++){
+            assertNotNull("DeckOfCards dealNext() is returning an unexpected null variable.", test_deck_1.dealNext());
+            assertNotNull("DeckOfCards dealNext() is returning an unexpected null variable.", test_deck_2.dealNext());
     	}
-    	assertEquals("DeckOfCards dealNext is returning a null variable.", null, test_deck_1.dealNext());
-    	assertEquals("DeckOfCards dealNext is returning a null variable.", null, test_deck_2.dealNext());
+    	assertNull("Empty DeckOfCards dealNext() is not returning a null variable.", test_deck_1.dealNext());
+        assertNull("Empty DeckOfCards dealNext() is not returning a null variable.", test_deck_2.dealNext());
     }
 
 }

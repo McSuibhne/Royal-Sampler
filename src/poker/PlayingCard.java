@@ -11,7 +11,7 @@ public class PlayingCard {
     private int face_value;
     private int game_value;
 
-
+    /**Playing card object. Holds name, suit (in unicode), face value and game value. Will be held either in a deck or a hand.*/
     PlayingCard(String name, String suit, int face, int value) {
         card_name = name;
         card_suit = suit;
@@ -30,7 +30,7 @@ public class PlayingCard {
     }
 
     /**Public accessor for the Face Value*/
-    public int getFaceValue() {
+    int getFaceValue() {
         return face_value;
     }
 
@@ -42,33 +42,5 @@ public class PlayingCard {
     /**PlayingCard toString (Card face + suit unicode)*/
     public String toString() {
         return card_name + card_suit;
-    }
-
-    /**Test code builds and prints contents of a full deck to show the class can represent any member card in a 52 card deck.*/
-    public static void main(String[] args) {
-        int current_value;
-
-        String[] suit_list = {PlayingCard.HEARTS, PlayingCard.DIAMONDS, PlayingCard.CLUBS, PlayingCard.SPADES};
-        String[] name_list = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
-
-        PlayingCard[] card_list = new PlayingCard[suit_list.length*name_list.length];
-
-        for(int i = 0; i < suit_list.length; i++){
-            for(int j = 0; j < name_list.length; j++){
-
-                if(name_list[j].equals("A")){
-                    current_value = 14;
-                }
-                else{
-                    current_value = j + 1;
-                }
-
-                PlayingCard current_card = new PlayingCard(name_list[j], suit_list[i], j + 1, current_value);
-                card_list[(i*name_list.length)+j] = current_card;
-            }
-        }
-        for(int i = 0; i < card_list.length; i++){
-            System.out.println(card_list[i].toString());
-        }
     }
 }

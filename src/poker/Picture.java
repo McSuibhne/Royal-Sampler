@@ -4,38 +4,46 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
-/**
- * Created by Gavin on 12/04/2017.
- */
-public class Picture extends JFrame {
+/**Picture class creates and outputs a byte array of an image of the user's cards to improve presentation of the game*/
+@SuppressWarnings("ConstantConditions, WeakerAccess")
+class Picture extends JFrame {
+    static final String CARD_FILES_PATH = "resources/";
+    private PlayingCard[] cards;
 
-    PlayingCard[] cards;
-
-    public Picture (PlayingCard[] handOfCards) {
+    /**Picture constructor calls super in JFrame superclass*/
+    Picture (PlayingCard[] handOfCards) {
         super("Card Pane");
         cards = handOfCards;
     }
 
-    public byte[] createPicture() {
-
+    /**createPicture returns the byte array of the graphical representation of the given card hand, as assembled using
+     * the individual card images in the resources folder*/
+    byte[] createPicture() {
         String cardsString[] = new String[5];
 
         // checks card suit and coverts to String to finish file name
         for (int i=0;i<cardsString.length;i++) {
             cardsString[i] = cards[i].getCardName() + "_of_";
-            if (cards[i].getCardSuit() == "\u2665") { // hearts
-                cardsString[i] += "hearts";
-            } else if (cards[i].getCardSuit() == "\u2666") { // diamonds
-                cardsString[i] += "diamonds";
-            } else if (cards[i].getCardSuit() == "\u2663") { // clubs
-                cardsString[i] += "clubs";
-            } else if (cards[i].getCardSuit() == "\u2660") { // spades
-                cardsString[i] += "spades";
-            } else {
-                System.out.println("ERROR IN SYMBOL TO STRING");
+            switch(cards[i].getCardSuit()) {
+                case "\u2665":  // hearts
+                    cardsString[i] += "hearts";
+                    break;
+                case "\u2666":  // diamonds
+                    cardsString[i] += "diamonds";
+                    break;
+                case "\u2663":  // clubs
+                    cardsString[i] += "clubs";
+                    break;
+                case "\u2660":  // spades
+                    cardsString[i] += "spades";
+                    break;
+                default:
+                    System.out.println("ERROR IN SYMBOL TO STRING");
+                    break;
             }
         }
 
@@ -56,11 +64,11 @@ public class Picture extends JFrame {
 
         // gets pics from files by name
         try {
-            cardPic = ImageIO.read(new File("src/resources/PNG-cards-1.3/" + cardsString[0] + ".png"));
-            cardPic1 = ImageIO.read(new File("src/resources/PNG-cards-1.3/" + cardsString[1] + ".png"));
-            cardPic2 = ImageIO.read(new File("src/resources/PNG-cards-1.3/" + cardsString[2] + ".png"));
-            cardPic3 = ImageIO.read(new File("src/resources/PNG-cards-1.3/" + cardsString[3] + ".png"));
-            cardPic4 = ImageIO.read(new File("src/resources/PNG-cards-1.3/" + cardsString[4] + ".png"));
+            cardPic = ImageIO.read(new File(CARD_FILES_PATH + cardsString[0] + ".png"));
+            cardPic1 = ImageIO.read(new File(CARD_FILES_PATH + cardsString[1] + ".png"));
+            cardPic2 = ImageIO.read(new File(CARD_FILES_PATH + cardsString[2] + ".png"));
+            cardPic3 = ImageIO.read(new File(CARD_FILES_PATH + cardsString[3] + ".png"));
+            cardPic4 = ImageIO.read(new File(CARD_FILES_PATH + cardsString[4] + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,25 +97,19 @@ public class Picture extends JFrame {
 
         // Outputs image of cards to folder twitter_output
         BufferedImage output = new BufferedImage(handOfCardsPanel.getWidth(), handOfCardsPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics g = output.createGraphics();
-        handOfCardsPanel.print(g);
-        g.dispose();
+        Graphics graphics = output.createGraphics();
+        handOfCardsPanel.print(graphics);
+        graphics.dispose();
 
         ByteArrayOutputStream image_stream = new ByteArrayOutputStream();
         try{
             ImageIO.write(output, "png", image_stream);
         }
-        catch(IOException e){}
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
 
         return image_stream.toByteArray();
     }
-
-    // for testing, can be deleted before submission
-/*
-    public static void main(String[] args) throws IOException {
-        new Picture(new HandOfCards(new DeckOfCards())).setVisible(false);
-    }
-
-*/
 }
 

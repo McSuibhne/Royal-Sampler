@@ -1,45 +1,99 @@
 package poker;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
+/**The PokerPlayer class is a superclass that both HumanPlayer and AIPlayer extend. Where the behavior of the two
+ * classes is identical, the implementation is included in this class to reduce code duplication. Where the behaviors
+ * differ, the method is left abstract to force the subclasses to provide their own implementation.*/
 public abstract class PokerPlayer {
-    public static final int STARTING_CHIPS = 10;
-    public HandOfCards hand;
-    protected String name;
-    public int chips;
-    public int current_bet;
-    public int previous_bet;
-    int discards;
+    static final int STARTING_CHIPS = 10;
+    private HandOfCards hand;
+    String name;
+    int chips;
+    int current_bet;
+    private int previous_bet;
+    private int discards;
     boolean bluff = false;
-    public boolean all_in = false;
+    boolean all_in = false;
 
-    //Hand is initialized.
-    public PokerPlayer(String player_name) {
+    /**Constructor for each poker player, usually invoked via a super() call within a subclass' constructor */
+    PokerPlayer(String player_name) {
         name=player_name;
         chips = STARTING_CHIPS;
         current_bet = -1;
         previous_bet = 0;
     }
 
-    public String getName() {
+    /**Getter for player's hand*/
+    HandOfCards getHand(){
+        return hand;
+    }
+
+    /**Getter for player name*/
+    String getName() {
         return name;
     }
 
-    public synchronized void deal(DeckOfCards deck){
+    /**Getter for player's number of chips*/
+    int getChips() {
+        return chips;
+    }
+
+    /**Setter for player's number of chips*/
+    void setChips(int new_chips) {
+        chips = new_chips;
+    }
+
+    /**Getter for this player's current highest bet in this round*/
+    int getCurrentBet(){
+        return current_bet;
+    }
+
+    /**Getter for the previous bet in the round by this player*/
+    int getPreviousBet(){
+        return previous_bet;
+    }
+
+    /**Setter for the previous bet in the round by this player*/
+    void setPreviousBet(int new_previous_bet){
+        previous_bet = new_previous_bet;
+    }
+
+    /**Getter for the number of discards made by the player*/
+    int getDiscards(){
+        return discards;
+    }
+
+    /**Getter for the AIPlayer's decision to bluff or not*/
+    boolean isBluff(){
+        return bluff;
+    }
+
+    /**Getter for the boolean set when a player goes all in on a bet*/
+    boolean isAllIn(){
+        return all_in;
+    }
+
+    /**Method deal() creates a new hand for itself at the beginning of the betting round, also resetting some variables needed for betting*/
+    synchronized void deal(DeckOfCards deck){
         all_in = false;
+        discards = 0;
+        current_bet = -1;
+        previous_bet = 0;
         hand = new HandOfCards(deck);
     }
 
-
+    /**Abstract method forces both subclasses to implement a betting strategy*/
     public abstract void getBet(int current_bet, int betting_round, int calls_since_raise, int pot, ArrayList<PokerPlayer> live_players);
 
-
+    /**Abstract method forces both subclasses to implement a discard strategy*/
     public abstract boolean[] discard();
 
-
-    public void discard_cards() {
+    /**Finds the cards to be discarded by the players and trades them from the hand for replacements*/
+    void discard_cards() {
         discards = 0;
+        current_bet = -1;
+        previous_bet = 0;
         boolean[] discard_cards = discard();
         for (int i = 0; i < HandOfCards.CARDS_IN_HAND; i++) {
             if (discard_cards[i] && discards < 3) {
@@ -49,53 +103,4 @@ public abstract class PokerPlayer {
         }
         hand.sort();
     }
-
-    //The main creates a new deck object and passes it into a new player object. The status of the deck is printed before
-    // and after calling discard() to show the effects, as well as the number of discards that occur.
-    // 10-04-17 Note: Tests disabled while old code is moved into AIPlayer
-    public static void main(String[] args) {
-        /*
-        DeckOfCards deck = new DeckOfCards();
-        PokerPlayer player = new PokerPlayer("test_player", deck);
-       /* DeckOfCards deck = new DeckOfCards();
-        ArrayList<PokerPlayer> player = new ArrayList<>();
-        for (int i=0 ;i<5; i ++ ){
-            if (i==0){
-                HumanPlayer players = new HumanPlayer(deck);
-            player.add(players);
-            }
-                else{
-            AIPlayer players = new AIPlayer(deck);
-                player.add(players);
-           }
-        System.out.println("After discard: " + player.cards.toString());
-
-        }
-//        for(int j= 0 ;j<DeckOfCards.CARDS_IN_DECK; j++){
-//            System.out.println("Deck is  " deck.);
-//
-//        }
-        for(int j= 0 ;j<player.size(); j++){
-            System.out.println("Player"+j+"cards is " + player.get(j).cards.toString());
-
-        }
-        for(int j= 0 ;j<player.size(); j++){
-            System.out.println("Player"+j+"can Open :" + player.get(j).canOpen());
-            if (true) {
-                boolean[] array = player.get(j).discard();
-                player.get(j).discard_cards(array);
-                System.out.println("Player" + j + "cards is " + player.get(j).cards.toString());
-            }
-            else {
-                continue;}
-        }
-//        System.out.println("Before discard: " +player.cards.toString());
-//        boolean[] discards = humanPlayer.discard();
-//        player.discardCards(discards);
-//
-//        System.out.println("After discard: " + player.cards.toString());
-
-    }*/
-    }
-
 }

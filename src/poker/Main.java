@@ -5,8 +5,7 @@ import twitter4j.TwitterException;
 import java.io.IOException;
 
 /**
- * Created by Orla on 27/04/2017.
- */
+ * Main runnable class, should be the starting point of the application.*/
 public class Main {
     public static void main(String[] args) throws TwitterException, IOException {
         TwitterInterface twitterInterface = new TwitterInterface();

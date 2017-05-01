@@ -1,22 +1,25 @@
 package poker;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**Each AIPlayer is given a randomly selected 80s wrestler name and a signature "tell" that they sometimes display when
+ * bluffing. The likelihood they will try to bluff, as well as their approach to discarding cards is determined by the
+ * random (within boundaries) discard minimum determined by the game object in which the AIPlayer is made.*/
+@SuppressWarnings("ForLoopReplaceableByForEach, WeakerAccess")
 public class AIPlayer extends PokerPlayer {
-    public static final String NAMES_FILE = "src/poker/AINames.txt";
-    public static final String TELLS_FILE = "src/poker/AITells.txt";
-    public static final int NAMES_FILE_LENGTH = 60;
-    public static final int TELLS_FILE_LENGTH = 20;
-    public String tell;
-    int ai_number;
-    int discard_minimum;
+    static final String NAMES_FILE = "src/poker/AINames.txt";
+    static final String TELLS_FILE = "src/poker/AITells.txt";
+    static final int NAMES_FILE_LENGTH = 60;
+    static final int TELLS_FILE_LENGTH = 20;
+    private String tell;
+    private int ai_number;
+    private int discard_minimum;
 
-
-    public AIPlayer(int ai_index, int discard_min){
+    /**AIPlayer constructor initialises the bot with its name and tell, read in from external text files*/
+    AIPlayer(int ai_index, int discard_min){
         super(null);
         ai_number = ai_index;
         discard_minimum = discard_min;
@@ -25,24 +28,29 @@ public class AIPlayer extends PokerPlayer {
         tell = getAiTrait(ai_number, name_line.split(";")[1]);
     }
 
+    String getTell(){
+        return tell;
+    }
+
+    /**getBet receives a large amount of information about the status of the round and opponents and returns a
+     * call/raise/fold decision. They may also decide to bluff, depending on their hand and discard minimum.*/
     public void getBet(int highest_bet, int betting_round, int calls_since_raise, int pot, ArrayList<PokerPlayer> live_players){
         Random random = new Random();
         if(betting_round==1){
-            discards = 0;
             bluff = false;
             if(highest_bet == 0) {
-                if(hand.getGameValue() < HandOfCards.ONE_PAIR_VALUE) {
-                    if(hand.getGameValue() < HandOfCards.ONE_PAIR_VALUE) {
+                if(getHand().getGameValue() < HandOfCards.ONE_PAIR_VALUE) {
+                    if(getHand().getGameValue() < HandOfCards.ONE_PAIR_VALUE) {
                         bluff = true;
                     }
                     current_bet = highest_bet;
                 }
                 else {
-                    if(random.nextInt(ai_number + 1 + ((int) (chips/STARTING_CHIPS))) == 0){
+                    if(random.nextInt(ai_number + 1 + (chips/STARTING_CHIPS)) == 0){
                         current_bet = highest_bet;
                     }
                     else {
-                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(hand.getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
+                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(getHand().getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
                         if(current_bet >= chips) {
                             if(chips > RoundOfPoker.ANTE) {
                                 current_bet = chips - RoundOfPoker.ANTE;
@@ -55,14 +63,14 @@ public class AIPlayer extends PokerPlayer {
                 }
             }
             else {
-                if(hand.getGameValue() < HandOfCards.ONE_PAIR_VALUE){
-                    if(random.nextBoolean()) {
+                if(getHand().getGameValue() < HandOfCards.ONE_PAIR_VALUE){
+                    if(random.nextBoolean() && discard_minimum <= GameOfPoker.DISCARD_MAXIMUM - GameOfPoker.DISCARD_MINIMUM_RANGE) {
                         bluff = true;
                         current_bet = highest_bet;
                     }
                     else {
                         bluff = false;
-                        if(hand.isDrawingHand() && calls_since_raise == live_players.size() - 2 && highest_bet < chips / 4) {
+                        if(getHand().isDrawingHand() && calls_since_raise == live_players.size() - 2 && highest_bet < chips / 4) {
                             current_bet = highest_bet;
                         }
                         else {
@@ -72,8 +80,8 @@ public class AIPlayer extends PokerPlayer {
                 }
                 else {
                     bluff = false;
-                    if((int) (chips/(double)STARTING_CHIPS/2)*(hand.getGameValue()/(HandOfCards.ONE_PAIR_VALUE/2)) > 0){
-                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(hand.getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
+                    if((int) (chips/(double)STARTING_CHIPS/2)*(getHand().getGameValue()/(HandOfCards.ONE_PAIR_VALUE/2)) > 0){
+                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(getHand().getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
                     }
                     else if(chips < highest_bet - current_bet){
                         current_bet = chips;
@@ -103,12 +111,12 @@ public class AIPlayer extends PokerPlayer {
                         current_bet = -1;
                     }
                 }
-                else if(hand.getGameValue() < HandOfCards.TWO_PAIR_VALUE){
+                else if(this.getHand().getGameValue() < HandOfCards.TWO_PAIR_VALUE){
                     current_bet = highest_bet;
                 }
                 else{
-                    current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(hand.getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
-                    if(hand.getGameValue() < HandOfCards.THREE_OF_A_KIND_VALUE + 6){
+                    current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(getHand().getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
+                    if(this.getHand().getGameValue() < HandOfCards.THREE_OF_A_KIND_VALUE + 6){
                         current_bet *= 2;
                     }
                     if(current_bet > chips){
@@ -137,7 +145,7 @@ public class AIPlayer extends PokerPlayer {
                     }
                 }
                 else {
-                    if(hand.getGameValue() < HandOfCards.TWO_PAIR_VALUE) {
+                    if(this.getHand().getGameValue() < HandOfCards.TWO_PAIR_VALUE) {
                         if(highest_bet - current_bet > chips / 8) {
                             current_bet = highest_bet;
                         }
@@ -146,8 +154,8 @@ public class AIPlayer extends PokerPlayer {
                         }
                     }
                     else {
-                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(hand.getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
-                        if(hand.getGameValue() < HandOfCards.THREE_OF_A_KIND_VALUE + 6){
+                        current_bet = highest_bet + (int) ((chips/(double)(STARTING_CHIPS/2))*(getHand().getGameValue()/(double)(HandOfCards.ONE_PAIR_VALUE/2)));
+                        if(this.getHand().getGameValue() < HandOfCards.THREE_OF_A_KIND_VALUE + 6){
                             current_bet *= 2;
                         }
                         if(current_bet > chips){
@@ -178,9 +186,30 @@ public class AIPlayer extends PokerPlayer {
             current_bet = highest_bet;
             all_in = true;
         }
-
     }
 
+    /**Method compares the getDiscardProbability of each card index to the discard minimum for each row of the 2D array.
+     * If all elements of a row are above the discard minimum, that row is selected and the discard strategy is
+     * returned in a boolean array. If there are no rows with all elements above the minimum, the method will discard
+     * as many kickers as it can. */
+    public boolean[] discard(){
+        boolean[] discard_cards = {false, false, false, false, false};
+        if(!bluff) {
+            int[][] discard_probability = getHand().getDiscardProbability();
+            boolean discard_occurred = false;
+            for(int i = 0; i < 3 && !discard_occurred; i++) {
+                for(int j = 0; j < HandOfCards.CARDS_IN_HAND; j++) {
+                    if(discard_probability[i][j] > discard_minimum) {
+                        discard_cards[j] = true;
+                        discard_occurred = true;
+                    }
+                }
+            }
+        }
+        return discard_cards;
+    }
+
+    /**Reads in a random (though non-repeatable) 80s wrestler name for the player from the external AINames file.*/
     private String getAiName(int ai_number){
         String ai_name = null;
         try{
@@ -202,6 +231,7 @@ public class AIPlayer extends PokerPlayer {
         return ai_name;
     }
 
+    /**Reads in a random (though non-repeatable) poker bluffing "tell" for the player from the external AITells file.*/
     private String getAiTrait(int ai_number, String bot_gender){
         String tell = null;
         try{
@@ -231,30 +261,5 @@ public class AIPlayer extends PokerPlayer {
         return tell;
     }
 
-
-    // Method calls getDiscardProbability on each card index in the cards and compares the returned values to the
-    // given discard minimum.
-    // As this minimum is always <100 and cannot go below 0, a card with a discard probability of 100 will always be
-    // traded while a card with a discard probability of 0 can never be traded.
-    // The index of each card that should be traded is recorded in a boolean array and returned.
-    // All print statements are for testing and can be later removed.
-    public boolean[] discard(){
-        boolean[] discard_cards = {false, false, false, false, false};
-        if(!bluff) {
-            //System.out.println("Discard probability minimum: " + discard_minimum); //Testing
-            int[][] discard_probability = hand.getDiscardProbability();
-            //System.out.println("Discard probabilities: "); //Testing
-            boolean discard_occurred = false;
-            for(int i = 0; i < 3 && !discard_occurred; i++) {
-                for(int j = 0; j < HandOfCards.CARDS_IN_HAND; j++) {
-                    if(discard_probability[i][j] > discard_minimum) {
-                        discard_cards[j] = true;
-                        discard_occurred = true;
-                    }
-                }
-            }
-        }
-        return discard_cards;
-    }
 }
 

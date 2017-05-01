@@ -6,31 +6,29 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Orla on 20/03/2017.
- */
-public class TwitterInterface {
-    public static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
-    public static final int NAMES_FILE_LENGTH = 4;
-    public static final String BOT_TWITTER_NAME = "@RoyalSampler1";
-    long BOT_TWITTER_ID = 843979502158004225L;
+/**TwitterInterface is called only once by main but will listen continuously to tweets related to starting, ending, or
+ * playing games until it is terminated. It also posts all updates to games and replies/images to users.*/
+@SuppressWarnings("ForLoopReplaceableByForEach, WeakerAccess")
+class TwitterInterface {
+    static final String NAMES_FILE = "src/poker/TwitterConfig.txt";
+    static final int NAMES_FILE_LENGTH = 4;
+    static final String BOT_TWITTER_NAME = "@RoyalSampler1";
+    static final long BOT_TWITTER_ID = 843979502158004225L;
     private final Object lock = new Object();
-    public final Object post_sync = new Object();
-    TwitterFactory twitterFactory;
-    Twitter twitter;
-    Configuration config;
-    TwitterStream stream;
-    ArrayList<GameOfPoker> game_list = new ArrayList();
+    private final Object post_sync = new Object();
+    private Twitter twitter;
+    private Configuration config;
+    private ArrayList<GameOfPoker> game_list = new ArrayList<>();
 
+    /**TwitterInterface constructor initialises the core twitter objects needed for the application.*/
     public TwitterInterface() throws IOException {
         config = setConfiguration();
-        twitterFactory = new TwitterFactory(config);
+        TwitterFactory twitterFactory = new TwitterFactory(config);
         twitter = twitterFactory.getInstance();
     }
 
+    /**SetConfiguration reads in the account data of the twitter bot from and external text file and gains access permissions*/
     public Configuration setConfiguration() {
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         Configuration configuration;
@@ -51,14 +49,18 @@ public class TwitterInterface {
         } catch(FileNotFoundException e) {
             e.printStackTrace();
         } catch(IOException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
         configuration = configurationBuilder.build();
         return configuration;
     }
 
+    /**StartGame, when called, begins to listen for all tweets posted byt the twitter bot itself
+     * (to update the most recent tweet for that game), for all tweets containing #rsdealmein or #rsdealmeout to
+     * start and end games, and for any replies to the twitter bot which contain bet or discard instructions.
+     * On each instance of one of the above the relevant thread is updated and the listener continues.*/
     public void startGame(String[] word, TwitterInterface twitter_interface) throws TwitterException {
-        stream = new TwitterStreamFactory(config).getInstance();
+        TwitterStream stream = new TwitterStreamFactory(config).getInstance();
         StatusListener listener = new StatusListener() {
             public void onStatus(Status status) {
                 User user = status.getUser();
@@ -68,7 +70,7 @@ public class TwitterInterface {
                     if(user_name.equals(BOT_TWITTER_NAME.substring(1))) {
                         if(status.getText().toLowerCase().contains(word[1])) {
                             for(int i = 0; i < game_list.size(); i++) {
-                                if(game_list.get(i).game_ended) {
+                                if(game_list.get(i).isGameEnded()) {
                                     game_list.get(i).interrupt();
                                     game_list.remove(i);
                                 }
@@ -90,7 +92,7 @@ public class TwitterInterface {
                     else if(status.getText().toLowerCase().contains(word[0])) {
                         int game_index = -1;
                         for(int i = 0; i < game_list.size(); i++) {
-                            if(game_list.get(i).user.getName().equals(user.getName())) {
+                            if(game_list.get(i).getUser().getName().equals(user.getName())) {
                                 game_index = i;
                                 break;
                             }
@@ -107,7 +109,7 @@ public class TwitterInterface {
                     //It's someone tweeting #rsdealmeout
                     else if(status.getText().toLowerCase().contains(word[1])) {
                         for(int i = 0; i < game_list.size(); i++) {
-                            if(game_list.get(i).user.getName().equals(user.getName())) {
+                            if(game_list.get(i).getUser().getName().equals(user.getName())) {
                                 game_list.get(i).quitMessage();
                                 game_list.get(i).interrupt();
                                 game_list.remove(i);
@@ -118,7 +120,7 @@ public class TwitterInterface {
                     //It's someone tweeting a reply to bet or discard cards
                     else if(status.getText().contains(word[2])) {
                         for(int i = 0; i < game_list.size(); i++) {
-                            if(game_list.get(i).user.getScreenName().equals(user_name)) {
+                            if(game_list.get(i).getUser().getScreenName().equals(user_name)) {
                                 HumanPlayer reply_player = game_list.get(i).getHumanPlayer();
                                 if(status.getInReplyToStatusId() == reply_player.getLastTweetId()) {
                                     reply_player.setReplyMessage(status.getText().substring(BOT_TWITTER_NAME.length()));
@@ -132,7 +134,6 @@ public class TwitterInterface {
                             }
                         }
                     }
-                    //System.out.println(status.getText());
                 }
             }
             public void onDeletionNotice(
@@ -178,7 +179,8 @@ public class TwitterInterface {
         stream.shutdown();
     }
 
-    public synchronized void postMessageToUser(String answer, HumanPlayer human_player) {
+    /**Sends reply to user with game information, given by the game, round, or player object that has called it.*/
+    synchronized void postMessageToUser(String answer, HumanPlayer human_player) {
         answer = "@" + human_player.getName() + " " + answer;
         if(answer.length() > 139) {
             answer = answer.substring(0, 139);
@@ -190,21 +192,23 @@ public class TwitterInterface {
                     post_sync.wait();
                 }
             }
-            catch(InterruptedException e){}
+            catch(InterruptedException e){
+                System.out.println(e.getMessage());
+            }
         }
         long reply_id = human_player.getLastTweetId();
         status_reply.setInReplyToStatusId(reply_id);
 
         try {
             human_player.tweet_id_updated = false;
-            //System.out.println(answer);
             twitter.updateStatus(status_reply);
-        } catch(TwitterException ex) {
-            //System.out.println("post failed"+ ex.toString());
+        } catch(TwitterException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public synchronized void postImageToUser(PlayingCard[] current_hand, String answer, HumanPlayer human_player) {
+    /**Sends tweet to relevant user with image of their present hand of cards*/
+    synchronized void postImageToUser(PlayingCard[] current_hand, String answer, HumanPlayer human_player) {
         answer = "@" + human_player.getName() + " " + answer;
         StatusUpdate status_reply = new StatusUpdate(answer);
         while(!human_player.tweet_id_updated){
@@ -213,7 +217,9 @@ public class TwitterInterface {
                     post_sync.wait();
                 }
             }
-            catch(InterruptedException e){}
+            catch(InterruptedException e){
+                System.out.println(e.getMessage());
+            }
         }
         long reply_id = human_player.getLastTweetId();
         status_reply.setInReplyToStatusId(reply_id);
@@ -222,20 +228,20 @@ public class TwitterInterface {
         status_reply.setMedia("Card Hand", new ByteArrayInputStream(picture.createPicture()));
         try {
             human_player.tweet_id_updated = false;
-            //System.out.println(answer);
             twitter.updateStatus(status_reply);
-        } catch(TwitterException ex) {
-            //System.out.println("post failed"+ ex.toString());
+        } catch(TwitterException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public void endGame(HumanPlayer human_player){
+    /**Sends terminating tweet, ending any game that has come to its natural conclusion*/
+    void endGame(HumanPlayer human_player){
         StatusUpdate end_message = new StatusUpdate("#rsdealmeout");
         end_message.setInReplyToStatusId(human_player.getLastTweetId());
         try {
             twitter.updateStatus(end_message);
         }catch(TwitterException e){
-            //System.out.println("end post failed"+ e.toString());
+            System.out.println(e.getMessage());
         }
     }
 }

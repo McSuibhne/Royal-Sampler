@@ -3,16 +3,23 @@ package poker;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RoundOfPoker {
-    public static final int ANTE = 1;
-    public int pot;
-    boolean player_folded = false;
-    TwitterInterface twitter;
-    ArrayList<PokerPlayer> live_players = new ArrayList<>();
-    DeckOfCards deck;
-    HumanPlayer human_player;
+/**
+ * The round object is created repeatedly by each GameOfPoker object and is the other main class responsible for the flow and timing
+ * of the game. The structurally central "playRound" class makes use of many helper methods to accurately represent a poker game,
+ * as well as the TwitterInterface object to respond to the user*/
+@SuppressWarnings("StringConcatenationInLoop,ForLoopReplaceableByForEach")
+class RoundOfPoker {
+    static final int ANTE = 1;
+    private int pot;
+    private boolean player_folded = false;
+    private TwitterInterface twitter;
+    private ArrayList<PokerPlayer> live_players = new ArrayList<>();
+    private DeckOfCards deck;
+    private HumanPlayer human_player;
 
-    public RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards card_deck, TwitterInterface twitterInterface) {
+    /**Round constructor*/
+    @SuppressWarnings("unchecked")
+    RoundOfPoker(ArrayList<PokerPlayer> player_list, DeckOfCards card_deck, TwitterInterface twitterInterface) {
         pot = 0;
         deck = card_deck;
         twitter = twitterInterface;
@@ -20,10 +27,8 @@ public class RoundOfPoker {
         human_player = (HumanPlayer) live_players.get(GameOfPoker.HUMAN_INDEX);
     }
 
-    public void playRound() {
-        for(int i=0; i<live_players.size(); i++){
-            live_players.get(i).discards = 0;
-        }
+    /**Method that governs the overall flow of the round*/
+    void playRound() {
         int opener_index = -1;
         boolean player_busted = false;
         while(opener_index == -1) {
@@ -49,35 +54,37 @@ public class RoundOfPoker {
                 }
             }
             winner_index = findWinner();
-            twitter.postMessageToUser("Player "+live_players.get(winner_index).getName()+" has won the round and gets "+ pot +" chips!", human_player);
-            live_players.get(winner_index).chips += pot;
+            twitter.postMessageToUser(live_players.get(winner_index).getName()+" has won the round and gets "+ pot +" chips!", human_player);
+            live_players.get(winner_index).setChips(live_players.get(winner_index).getChips() + pot);
         }
     }
 
-    public String countChips() {
+    /**Returns a String of the name and chip amount of all players at the start of each round*/
+    private String countChips() {
         String tweet_message = "";
         for(int i = 0; i < live_players.size(); i++) {
             String chip_string;
-            if(live_players.get(i).chips == 1) {
+            if(live_players.get(i).getChips() == 1) {
                 chip_string = " chip";
             }
             else {
                 chip_string = " chips";
             }
-            tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).chips + chip_string +"\n";
+            tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).getChips() + chip_string +"\n";
         }
 
         return tweet_message;
     }
 
-    public boolean payAnte() {
+    /**Adds the ante into the pot from each players' chips after ensuring they can afford to enter the round.*/
+    private boolean payAnte() {
         boolean isHumanBusted = false;
         boolean ante_paid = true;
         String tweet_message = "";
 
         for(int i = 0; i < live_players.size(); i++) {
-            if(live_players.get(i).chips >= ANTE) {
-                live_players.get(i).chips -= ANTE;
+            if(live_players.get(i).getChips() >= ANTE) {
+                live_players.get(i).setChips(live_players.get(i).getChips() - ANTE);
                 pot += ANTE;
             }
             else {
@@ -103,20 +110,23 @@ public class RoundOfPoker {
         return isHumanBusted;
     }
 
-    public void dealCards() {
+    /**Deals cards out to each player from the freshly-shuffled deck object initialized in the constructor*/
+    private void dealCards() {
         for(int i = 0; i < live_players.size(); i++) {
             live_players.get(i).deal(deck);
-            //System.out.println(live_players.get(i).getName() + ":\t" + live_players.get(i).hand.toString()); //Testing only!
         }
         human_player.outputHand();
     }
 
-    public int findOpener() {
+    /**Attempts to find an opener (player with at least a pair of cards).
+     * If no opener is found the round is restarted and the hands re-dealt.
+     * If multiple possible openers are found one is selected at random to start off the betting*/
+    private int findOpener() {
         ArrayList<Integer> opener_indexes = new ArrayList<>();
         int opener = -1;
 
         for(int i = 0; i < live_players.size(); i++) {
-            if(live_players.get(i).hand.getGameValue() > HandOfCards.ONE_PAIR_VALUE) {
+            if(live_players.get(i).getHand().getGameValue() > HandOfCards.ONE_PAIR_VALUE) {
                 opener_indexes.add(i);
             }
         }
@@ -129,15 +139,12 @@ public class RoundOfPoker {
         return opener;
     }
 
-    public void bet(int opener_index, int betting_round) {
+    /**bet() method will loop continuously until all live players have provided the same number of chips to the pot or
+     * have gone "all-in". An update is posted to the user every few actions to avoid hitting the character limit*/
+    private void bet(int opener_index, int betting_round) {
         int highest_bet = 0;
         int calls_since_raise = 0;
         boolean betting_finished = false;
-
-        for(int i = 0; i < live_players.size(); i++) {
-            live_players.get(i).current_bet = -1;
-            live_players.get(i).previous_bet = 0;
-        }
 
         if(opener_index >= live_players.size()) {
             opener_index = 0;
@@ -158,7 +165,7 @@ public class RoundOfPoker {
                 continue;
             }
 
-            if(current_player.all_in) {
+            if(current_player.isAllIn()) {
                 calls_since_raise++;
                 continue;
             }
@@ -166,7 +173,7 @@ public class RoundOfPoker {
             current_player.getBet(highest_bet, betting_round, calls_since_raise, pot, live_players);
 
             //Player has folded
-            if(current_player.current_bet == -1) {
+            if(current_player.getCurrentBet() == -1) {
                 tweet_message += current_player.getName() + " folds" + "\n";
                 int index = i % live_players.size();
                 if(index == 0) {
@@ -179,55 +186,56 @@ public class RoundOfPoker {
                 }
             }
             else {
-                if(current_player.bluff) {
+                if(current_player.isBluff()) {
                     try {
                         AIPlayer temp_player = (AIPlayer) current_player;
-                        tweet_message += temp_player.getName() + " " + temp_player.tell + "\n";
+                        tweet_message += temp_player.getName() + " " + temp_player.getTell() + "\n";
                     } catch(Exception e) {
-                    }   //Shouldn't ever be reached, bluff is never true for a Human Player
+                        System.out.print(e.getMessage());   //Shouldn't ever be reached, bluff is never true for a Human Player
+                    }
                 }
                 //Player has <= chips than bet and must go all-in
-                if(current_player.current_bet <= highest_bet && current_player.all_in) {
-                    if(current_player.all_in) {
+                if(current_player.getCurrentBet() <= highest_bet && current_player.isAllIn()) {
+                    if(current_player.isAllIn()) {
                         tweet_message += current_player.getName() + " goes all-in to call" + "\n";
                     }
-                    current_player.chips = 0;
-                    pot += (current_player.current_bet - current_player.previous_bet);
-                    current_player.previous_bet = current_player.current_bet;
+                    current_player.setChips(0);
+                    pot += (current_player.getCurrentBet() - current_player.getPreviousBet());
+                    current_player.setPreviousBet(current_player.getCurrentBet());
                     calls_since_raise++;
                 }
                 //Player has called
-                else if(current_player.current_bet == highest_bet) {
+                else if(current_player.getCurrentBet() == highest_bet) {
                     if(highest_bet == 0) {
                         tweet_message += current_player.getName() + " checks\n";
                     }
                     else {
                         tweet_message += current_player.getName() + " calls\n";
-                        current_player.chips -= (current_player.current_bet - current_player.previous_bet);
-                        pot += (current_player.current_bet - current_player.previous_bet);
-                        current_player.previous_bet = current_player.current_bet;
+                        current_player.setChips(current_player.getChips() - (current_player.getCurrentBet() - current_player.getPreviousBet()));
+                        pot += (current_player.getCurrentBet() - current_player.getPreviousBet());
+                        current_player.setPreviousBet(current_player.getCurrentBet());
                     }
                     calls_since_raise++;
                 }
                 //Player has raised
                 else {
-                    if(current_player.all_in) {
-                        tweet_message += current_player.getName() + " goes all-in to raise bet to " + current_player.current_bet + "\n";
+                    if(current_player.isAllIn()) {
+                        tweet_message += current_player.getName() + " goes all-in to raise bet to " + current_player.getCurrentBet() + "\n";
                     }
                     else {
                         if(highest_bet == 0) {
-                            tweet_message += current_player.getName() + " raises by " + current_player.current_bet + "\n";
+                            tweet_message += current_player.getName() + " raises by " + current_player.getCurrentBet() + "\n";
                         }
                         else {
                             tweet_message += current_player.getName() + " sees " + highest_bet + " and raises by "
-                                    + (current_player.current_bet - highest_bet) + " to " + current_player.current_bet + "\n";
+                                    + (current_player.getCurrentBet() - highest_bet) + " to " + current_player.getCurrentBet() + "\n";
                         }
                     }
-                    highest_bet = current_player.current_bet;
+                    highest_bet = current_player.getCurrentBet();
                     calls_since_raise = 0;
-                    current_player.chips -= (current_player.current_bet - current_player.previous_bet);
-                    pot += (current_player.current_bet - current_player.previous_bet);
-                    current_player.previous_bet = current_player.current_bet;
+                    current_player.setChips(current_player.getChips() - (current_player.getCurrentBet() - current_player.getPreviousBet()));
+                    pot += (current_player.getCurrentBet() - current_player.getPreviousBet());
+                    current_player.setPreviousBet(current_player.getCurrentBet());
                 }
             }
         }
@@ -236,13 +244,13 @@ public class RoundOfPoker {
         }
     }
 
-    public void discard() {
+    /**Asks each player for the cards they wish to discard and trades them for replacements, outputting to twitter
+     * the new hand of the human player and the number of cards each player discarded.*/
+    private void discard() {
         String tweet_message = "";
 
         for(int i = 0; i < live_players.size(); i++) {
-            //System.out.println(live_players.get(i).getName() + ":\t" + live_players.get(i).hand.toString()); //Testing only!
             live_players.get(i).discard_cards();
-            //System.out.println(live_players.get(i).getName() + ":\t" + live_players.get(i).hand.toString()); //Testing only!
         }
 
         if(!player_folded) {
@@ -251,24 +259,26 @@ public class RoundOfPoker {
 
         for(int i = GameOfPoker.HUMAN_INDEX + 1; i < live_players.size(); i++){
             String discards_size;
-            if(live_players.get(i).discards == 1){
+            if(live_players.get(i).getDiscards() == 1){
                 discards_size = " card";
             }
             else {
                 discards_size = " cards";
             }
-            tweet_message += live_players.get(i).getName() +" discards "+ live_players.get(i).discards + discards_size +"\n";
+            tweet_message += live_players.get(i).getName() +" discards "+ live_players.get(i).getDiscards() + discards_size +"\n";
         }
 
         twitter.postMessageToUser(tweet_message, human_player);
     }
 
-    public int findWinner() {
+    /**Determines which of the remaining players has the best hand, tweeting the contents of all surviving players as
+     * per a normal poker "showdown"*/
+    private int findWinner() {
         int best_hand_index = 0;
         if(live_players.size() > 1) {
             String tweet_message = "";
             for(int i = 0; i < live_players.size(); i++) {
-                tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).hand.toString() +"\n";
+                tweet_message += live_players.get(i).getName() +" "+ live_players.get(i).getHand().toString() +"\n";
 
                 if(!tweet_message.equals("") && tweet_message.length() > 90) {
                     twitter.postMessageToUser(tweet_message, human_player);
@@ -281,26 +291,11 @@ public class RoundOfPoker {
         }
 
         for(int i = best_hand_index + 1; i < live_players.size(); i++){
-            if(live_players.get(i).hand.getGameValue() > live_players.get(best_hand_index).hand.getGameValue()) {
+            if(live_players.get(i).getHand().getGameValue() > live_players.get(best_hand_index).getHand().getGameValue()) {
                 best_hand_index = i;
             }
         }
         return best_hand_index;
-    }
-
-    public static void main(String[] args) {
-        /*DeckOfCards deck = new DeckOfCards();
-        ArrayList<PokerPlayer> player_list = new ArrayList<>();
-        Random rand = new Random();
-        TwitterInterface twitter = null;
-        player_list.add(new HumanPlayer(deck, twitter));
-        for(int i=GameOfPoker.HUMAN_INDEX+1; i<=GameOfPoker.NUMBER_OF_BOTS; i++){
-            int discard_minimum = rand.nextInt(GameOfPoker.DISCARD_MINIMUM_RANGE)+((100)-(GameOfPoker.DISCARD_MINIMUM_RANGE*i));
-            player_list.add(new AIPlayer(i, discard_minimum, deck));
-            System.out.println(player_list.get(i).name +", "+ discard_minimum);       //**For testing**
-        }
-        RoundOfPoker round = new RoundOfPoker();
-        round.playRound(player_list, deck);*/
     }
 
 }
